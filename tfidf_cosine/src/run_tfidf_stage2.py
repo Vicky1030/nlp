@@ -288,7 +288,8 @@ def run(args):
             'latency_scope':'perf_counter_ns: individual sentence pair, text processing/tokenization, two transforms, sparse row cosine, >= decision; excludes load, warmup, I/O, scoring, record assembly',
             'final_evaluation_executed':False}
     write_json(config_path,config)
-    command=[sys.executable,'-B','-X','utf8',str(Path(__file__).resolve()),'--reload-config',str(config_path)]
+    command=[sys.executable,'-B','-X','utf8',str(Path(__file__).resolve()),'--reload-config',str(config_path),
+             '--validation',str(args.validation),'--stage1-root',str(args.stage1_root),'--output-root',str(output)]
     child=subprocess.run(command,capture_output=True,text=True,encoding='utf8')
     need(child.returncode==0,'new-process load failed: '+child.stderr)
     reload_result=strict_json(child.stdout)
