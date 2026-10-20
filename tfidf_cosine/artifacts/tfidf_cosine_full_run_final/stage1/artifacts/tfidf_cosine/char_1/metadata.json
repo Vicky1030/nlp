@@ -1,0 +1,54 @@
+{
+  "scheme": "char_1",
+  "parameters": {
+    "analyzer": "char",
+    "binary": false,
+    "decode_error": "strict",
+    "dtype": "numpy.float64",
+    "encoding": "utf-8",
+    "input": "content",
+    "lowercase": false,
+    "max_df": 1.0,
+    "max_features": null,
+    "min_df": 1,
+    "ngram_range": [
+      1,
+      1
+    ],
+    "norm": "l2",
+    "preprocessor": null,
+    "smooth_idf": true,
+    "stop_words": null,
+    "strip_accents": null,
+    "sublinear_tf": false,
+    "token_pattern": "(?u)\\b\\w\\w+\\b",
+    "tokenizer": null,
+    "use_idf": true,
+    "vocabulary": null
+  },
+  "train_pairs": 30899,
+  "fit_documents": 61798,
+  "vocabulary_size": 1669,
+  "train_sha256": "f001da4af1a6f651ebc3ce4c01c135ddfdcd8b9cef246fe6695f74d627f3aad2",
+  "environment": {
+    "python": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+    "os": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "scikit-learn": "1.9.1",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "jieba": "0.42.1",
+      "joblib": "1.6.0"
+    }
+  },
+  "tokenization": {
+    "analyzer": "sklearn char",
+    "behavior": "decode and configured preprocessing (lowercase=False, strip_accents=None), then sklearn collapses consecutive whitespace (2+) to a single ASCII space before character n-grams; no extra normalization"
+  },
+  "code_sha256": {
+    "tfidf_common.py": "e0c87ec30a3b4fb5092a5dedaceebc5103832e4ef3a5e1e20a305a7e1297033d",
+    "run_tfidf_stage1.py": "12e034da3fa345120ee9d349797c0f9c6e79eca4c3b58bca404e6f81c20b322d",
+    "data_loader.py": "89fc98b3b4ae0d87b9d58f0217be99ad98ff1a4c8b0da32ab1f518a18e012068"
+  },
+  "model_sha256": "33f87afa90742859b594f47532e90236896f0a8397f8111c525ff95a0e65ea34"
+}

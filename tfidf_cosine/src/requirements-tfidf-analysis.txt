@@ -1,0 +1,6 @@
+scikit-learn==1.9.1
+numpy==2.5.4
+scipy==1.18.1
+jieba==0.42.1
+joblib==1.6.0
+matplotlib==3.11.2

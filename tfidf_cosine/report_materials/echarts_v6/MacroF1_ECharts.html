@@ -1,0 +1,15 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>最终评估 Macro-F1 对照</title>
+<style>@font-face{font-family:ReportCJK;src:url(ReportCJK.font)}body{margin:0;background:#eef3f8;display:flex;align-items:center;justify-content:center;min-height:100vh}#chart{width:1280px;height:820px;max-width:100vw}</style>
+<div id="chart"></div><script src="echarts.min.js"></script><script>
+window.__chartReady=false; window.__chartError=null;
+document.fonts.ready.then(()=>{
+  try {
+    const c=echarts.init(document.getElementById('chart'),null,{renderer:'svg'});
+    const o={"animation":false,"backgroundColor":"#fff","textStyle":{"fontFamily":"ReportCJK","color":"#18324D"},"grid":{"left":108,"right":90,"top":180,"bottom":132},"tooltip":{"trigger":"axis","axisPointer":{"type":"shadow"}},"xAxis":{"type":"category","data":["TF-IDF＋余弦相似度","固定全部预测 0"],"axisTick":{"show":false},"axisLine":{"lineStyle":{"color":"#C7D2E0"}},"axisLabel":{"fontSize":22,"margin":25,"color":"#203B54"}},"yAxis":{"type":"value","min":0,"max":100,"interval":20,"name":"Macro-F1","nameTextStyle":{"fontSize":17,"color":"#738397"},"axisLabel":{"formatter":"{value}%","fontSize":16,"color":"#8290A2"},"splitLine":{"lineStyle":{"color":"#EAF0F6","type":"dashed"}},"axisLine":{"show":false}},"series":[{"type":"bar","barWidth":150,"data":[{"value":55.75421144847543,"itemStyle":{"color":"#20A897","borderRadius":[12,12,0,0]}},{"value":40.828077872223744,"itemStyle":{"color":"#B5C5D8","borderRadius":[12,12,0,0]}}],"label":{"show":true,"position":"top","distance":18,"fontSize":33,"fontWeight":"bold","color":"#17384E","formatter":"{c}%"}}],"graphic":[{"type":"text","left":65,"top":36,"style":{"text":"最终评估 Macro-F1 对照","font":"bold 34px ReportCJK","fill":"#16314C"}},{"type":"text","left":67,"top":94,"style":{"text":"同一最终评估集 · 4,316 个句子对","font":"18px ReportCJK","fill":"#748398"}},{"type":"text","left":67,"bottom":35,"style":{"text":"配置：字符 1～2-gram，阈值 0.28    参照：固定全部预测为 0","font":"16px ReportCJK","fill":"#748398"}}]};
+    if(o.series[0].type==='bar')o.series[0].label.formatter=p=>Number(p.value).toFixed(2)+'%';
+
+    c.setOption(o); window.chart=c; window.addEventListener('resize',()=>c.resize());
+    requestAnimationFrame(()=>{if(!document.querySelector('#chart svg')) throw new Error('ECharts SVG未生成'); window.__chartReady=true;});
+  } catch (e) { window.__chartError=String(e); }
+}).catch(e=>{window.__chartError=String(e);});
+</script></html>

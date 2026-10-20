@@ -1,0 +1,542 @@
+{
+  "method": "tfidf_cosine",
+  "representation": "char_1_2",
+  "threshold_index": 28,
+  "threshold": 0.28,
+  "operator": ">=",
+  "schemes": [
+    "char_1",
+    "char_1_2",
+    "word_1"
+  ],
+  "candidate_thresholds": [
+    {
+      "threshold_index": 0,
+      "threshold": 0.0
+    },
+    {
+      "threshold_index": 1,
+      "threshold": 0.01
+    },
+    {
+      "threshold_index": 2,
+      "threshold": 0.02
+    },
+    {
+      "threshold_index": 3,
+      "threshold": 0.03
+    },
+    {
+      "threshold_index": 4,
+      "threshold": 0.04
+    },
+    {
+      "threshold_index": 5,
+      "threshold": 0.05
+    },
+    {
+      "threshold_index": 6,
+      "threshold": 0.06
+    },
+    {
+      "threshold_index": 7,
+      "threshold": 0.07
+    },
+    {
+      "threshold_index": 8,
+      "threshold": 0.08
+    },
+    {
+      "threshold_index": 9,
+      "threshold": 0.09
+    },
+    {
+      "threshold_index": 10,
+      "threshold": 0.1
+    },
+    {
+      "threshold_index": 11,
+      "threshold": 0.11
+    },
+    {
+      "threshold_index": 12,
+      "threshold": 0.12
+    },
+    {
+      "threshold_index": 13,
+      "threshold": 0.13
+    },
+    {
+      "threshold_index": 14,
+      "threshold": 0.14
+    },
+    {
+      "threshold_index": 15,
+      "threshold": 0.15
+    },
+    {
+      "threshold_index": 16,
+      "threshold": 0.16
+    },
+    {
+      "threshold_index": 17,
+      "threshold": 0.17
+    },
+    {
+      "threshold_index": 18,
+      "threshold": 0.18
+    },
+    {
+      "threshold_index": 19,
+      "threshold": 0.19
+    },
+    {
+      "threshold_index": 20,
+      "threshold": 0.2
+    },
+    {
+      "threshold_index": 21,
+      "threshold": 0.21
+    },
+    {
+      "threshold_index": 22,
+      "threshold": 0.22
+    },
+    {
+      "threshold_index": 23,
+      "threshold": 0.23
+    },
+    {
+      "threshold_index": 24,
+      "threshold": 0.24
+    },
+    {
+      "threshold_index": 25,
+      "threshold": 0.25
+    },
+    {
+      "threshold_index": 26,
+      "threshold": 0.26
+    },
+    {
+      "threshold_index": 27,
+      "threshold": 0.27
+    },
+    {
+      "threshold_index": 28,
+      "threshold": 0.28
+    },
+    {
+      "threshold_index": 29,
+      "threshold": 0.29
+    },
+    {
+      "threshold_index": 30,
+      "threshold": 0.3
+    },
+    {
+      "threshold_index": 31,
+      "threshold": 0.31
+    },
+    {
+      "threshold_index": 32,
+      "threshold": 0.32
+    },
+    {
+      "threshold_index": 33,
+      "threshold": 0.33
+    },
+    {
+      "threshold_index": 34,
+      "threshold": 0.34
+    },
+    {
+      "threshold_index": 35,
+      "threshold": 0.35
+    },
+    {
+      "threshold_index": 36,
+      "threshold": 0.36
+    },
+    {
+      "threshold_index": 37,
+      "threshold": 0.37
+    },
+    {
+      "threshold_index": 38,
+      "threshold": 0.38
+    },
+    {
+      "threshold_index": 39,
+      "threshold": 0.39
+    },
+    {
+      "threshold_index": 40,
+      "threshold": 0.4
+    },
+    {
+      "threshold_index": 41,
+      "threshold": 0.41
+    },
+    {
+      "threshold_index": 42,
+      "threshold": 0.42
+    },
+    {
+      "threshold_index": 43,
+      "threshold": 0.43
+    },
+    {
+      "threshold_index": 44,
+      "threshold": 0.44
+    },
+    {
+      "threshold_index": 45,
+      "threshold": 0.45
+    },
+    {
+      "threshold_index": 46,
+      "threshold": 0.46
+    },
+    {
+      "threshold_index": 47,
+      "threshold": 0.47
+    },
+    {
+      "threshold_index": 48,
+      "threshold": 0.48
+    },
+    {
+      "threshold_index": 49,
+      "threshold": 0.49
+    },
+    {
+      "threshold_index": 50,
+      "threshold": 0.5
+    },
+    {
+      "threshold_index": 51,
+      "threshold": 0.51
+    },
+    {
+      "threshold_index": 52,
+      "threshold": 0.52
+    },
+    {
+      "threshold_index": 53,
+      "threshold": 0.53
+    },
+    {
+      "threshold_index": 54,
+      "threshold": 0.54
+    },
+    {
+      "threshold_index": 55,
+      "threshold": 0.55
+    },
+    {
+      "threshold_index": 56,
+      "threshold": 0.56
+    },
+    {
+      "threshold_index": 57,
+      "threshold": 0.57
+    },
+    {
+      "threshold_index": 58,
+      "threshold": 0.58
+    },
+    {
+      "threshold_index": 59,
+      "threshold": 0.59
+    },
+    {
+      "threshold_index": 60,
+      "threshold": 0.6
+    },
+    {
+      "threshold_index": 61,
+      "threshold": 0.61
+    },
+    {
+      "threshold_index": 62,
+      "threshold": 0.62
+    },
+    {
+      "threshold_index": 63,
+      "threshold": 0.63
+    },
+    {
+      "threshold_index": 64,
+      "threshold": 0.64
+    },
+    {
+      "threshold_index": 65,
+      "threshold": 0.65
+    },
+    {
+      "threshold_index": 66,
+      "threshold": 0.66
+    },
+    {
+      "threshold_index": 67,
+      "threshold": 0.67
+    },
+    {
+      "threshold_index": 68,
+      "threshold": 0.68
+    },
+    {
+      "threshold_index": 69,
+      "threshold": 0.69
+    },
+    {
+      "threshold_index": 70,
+      "threshold": 0.7
+    },
+    {
+      "threshold_index": 71,
+      "threshold": 0.71
+    },
+    {
+      "threshold_index": 72,
+      "threshold": 0.72
+    },
+    {
+      "threshold_index": 73,
+      "threshold": 0.73
+    },
+    {
+      "threshold_index": 74,
+      "threshold": 0.74
+    },
+    {
+      "threshold_index": 75,
+      "threshold": 0.75
+    },
+    {
+      "threshold_index": 76,
+      "threshold": 0.76
+    },
+    {
+      "threshold_index": 77,
+      "threshold": 0.77
+    },
+    {
+      "threshold_index": 78,
+      "threshold": 0.78
+    },
+    {
+      "threshold_index": 79,
+      "threshold": 0.79
+    },
+    {
+      "threshold_index": 80,
+      "threshold": 0.8
+    },
+    {
+      "threshold_index": 81,
+      "threshold": 0.81
+    },
+    {
+      "threshold_index": 82,
+      "threshold": 0.82
+    },
+    {
+      "threshold_index": 83,
+      "threshold": 0.83
+    },
+    {
+      "threshold_index": 84,
+      "threshold": 0.84
+    },
+    {
+      "threshold_index": 85,
+      "threshold": 0.85
+    },
+    {
+      "threshold_index": 86,
+      "threshold": 0.86
+    },
+    {
+      "threshold_index": 87,
+      "threshold": 0.87
+    },
+    {
+      "threshold_index": 88,
+      "threshold": 0.88
+    },
+    {
+      "threshold_index": 89,
+      "threshold": 0.89
+    },
+    {
+      "threshold_index": 90,
+      "threshold": 0.9
+    },
+    {
+      "threshold_index": 91,
+      "threshold": 0.91
+    },
+    {
+      "threshold_index": 92,
+      "threshold": 0.92
+    },
+    {
+      "threshold_index": 93,
+      "threshold": 0.93
+    },
+    {
+      "threshold_index": 94,
+      "threshold": 0.94
+    },
+    {
+      "threshold_index": 95,
+      "threshold": 0.95
+    },
+    {
+      "threshold_index": 96,
+      "threshold": 0.96
+    },
+    {
+      "threshold_index": 97,
+      "threshold": 0.97
+    },
+    {
+      "threshold_index": 98,
+      "threshold": 0.98
+    },
+    {
+      "threshold_index": 99,
+      "threshold": 0.99
+    },
+    {
+      "threshold_index": 100,
+      "threshold": 1.0
+    },
+    {
+      "threshold_index": 101,
+      "threshold": 1.01
+    }
+  ],
+  "selection_rules": {
+    "within_scheme": [
+      "Macro-F1 descending",
+      "Accuracy descending",
+      "threshold_index descending"
+    ],
+    "across_schemes": [
+      "best Macro-F1 descending",
+      "best Accuracy descending",
+      "scheme order ascending"
+    ],
+    "scheme_order": [
+      "char_1",
+      "char_1_2",
+      "word_1"
+    ],
+    "ranking": "Exact Fraction from integer confusion counts; no rounded metrics or tie tolerance"
+  },
+  "selection_claim": "在预设三种表示和 102 个候选阈值中，验证集按既定规则选出的最佳配置。",
+  "validation_metrics": {
+    "scheme": "char_1_2",
+    "threshold_index": 28,
+    "threshold": 0.28,
+    "n_samples": 3433,
+    "accuracy": 0.6076318089134868,
+    "precision_1": 0.37916666666666665,
+    "recall_1": 0.4304635761589404,
+    "f1_1": 0.40319007532122286,
+    "macro_f1": 0.5554678951134211,
+    "TN": 1631,
+    "FP": 745,
+    "FN": 602,
+    "TP": 455,
+    "predicted_0": 2233,
+    "predicted_1": 1200
+  },
+  "exact_ranking_scores": {
+    "accuracy": "2086/3433",
+    "precision_1": "91/240",
+    "recall_1": "65/151",
+    "f1_1": "910/2257",
+    "macro_f1": "5778262/10402513"
+  },
+  "parameters": {
+    "analyzer": "char",
+    "binary": false,
+    "decode_error": "strict",
+    "dtype": "numpy.float64",
+    "encoding": "utf-8",
+    "input": "content",
+    "lowercase": false,
+    "max_df": 1.0,
+    "max_features": null,
+    "min_df": 1,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "norm": "l2",
+    "preprocessor": null,
+    "smooth_idf": true,
+    "stop_words": null,
+    "strip_accents": null,
+    "sublinear_tf": false,
+    "token_pattern": "(?u)\\b\\w\\w+\\b",
+    "tokenizer": null,
+    "use_idf": true,
+    "vocabulary": null
+  },
+  "tokenization": {
+    "analyzer": "sklearn char",
+    "behavior": "decode and configured preprocessing (lowercase=False, strip_accents=None), then sklearn collapses consecutive whitespace (2+) to a single ASCII space before character n-grams; no extra normalization"
+  },
+  "vectorizer": {
+    "path": "../../../stage1/artifacts/tfidf_cosine/char_1_2/vectorizer.joblib",
+    "sha256": "bf0e9d5ade8cc13cb2d619a3ec226014f472e8b307b64a39aad90d011ff10db5"
+  },
+  "validation": {
+    "path": "../../../../data/processed/validation.jsonl",
+    "sha256": "4fcdbfcc3dd252e7f385e6535510df0fbe8f488e0cf0d7681d380049a6b6b8f5"
+  },
+  "similarity_inputs": {
+    "char_1": {
+      "path": "../../../stage1/results/tfidf_cosine/validation_similarity_char_1.jsonl",
+      "sha256": "0d2208356c4765e26d70a341fd03bcac6c12be4f650b9164554f60d80c5fa7bd"
+    },
+    "char_1_2": {
+      "path": "../../../stage1/results/tfidf_cosine/validation_similarity_char_1_2.jsonl",
+      "sha256": "6dab9cf82ee5bc426c54f2ca2f44218e8f8cf34e04a1273ee5ca203f9bd82b57"
+    },
+    "word_1": {
+      "path": "../../../stage1/results/tfidf_cosine/validation_similarity_word_1.jsonl",
+      "sha256": "3c6248277328b431d0e8a6b1f488959370905e99abd664c9fdfa85c22f5bbe33"
+    }
+  },
+  "validation_predictions": {
+    "path": "../../results/tfidf_cosine/validation_selected_predictions.jsonl",
+    "sha256": "e808c83c1b49261e97768817b94d1a2d5c4a6b9a05e990d6001b41dfb270b60c"
+  },
+  "training_data_sha256_from_metadata": "f001da4af1a6f651ebc3ce4c01c135ddfdcd8b9cef246fe6695f74d627f3aad2",
+  "environment": {
+    "python": "3.14.0",
+    "os": "Windows-11-10.0.26200-SP0",
+    "packages": {
+      "scikit-learn": "1.9.1",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "jieba": "0.42.1",
+      "joblib": "1.6.0"
+    }
+  },
+  "code_sha256": {
+    "run_tfidf_stage2.py": "3cc77545906d321102095d6a9fa32c81cfe64e93354b3eee82a78b2535aae74e",
+    "tfidf_common.py": "e0c87ec30a3b4fb5092a5dedaceebc5103832e4ef3a5e1e20a305a7e1297033d",
+    "data_loader.py": "89fc98b3b4ae0d87b9d58f0217be99ad98ff1a4c8b0da32ab1f518a18e012068"
+  },
+  "code_directory": "../../../../src",
+  "path_resolution": "All paths relative to this selected_config.json directory",
+  "latency_scope": "perf_counter_ns: individual sentence pair, text processing/tokenization, two transforms, sparse row cosine, >= decision; excludes load, warmup, I/O, scoring, record assembly",
+  "final_evaluation_executed": false
+}
