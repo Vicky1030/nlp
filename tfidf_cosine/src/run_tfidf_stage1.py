@@ -181,7 +181,7 @@ def main():
         assert all(set(r)=={'id','label','similarity'} for r in reread)
         assert [(r['id'],r['label']) for r in reread] == [(r['id'],r['label']) for r in validation]
         assert np.array_equal(np.array([r['similarity'] for r in reread]), scores)
-        cmd = [sys.executable, '-B', str(Path(__file__).resolve()), '--reload-check', '--model', str(model), '--validation', str(args.validation), '--scores', str(output)]
+        cmd = [sys.executable, '-B', str(Path(__file__).resolve()), '--reload-check', '--model', str(model), '--validation', str(args.validation), '--scores', str(output), '--train', str(args.train), '--output-root', str(dest)]
         worker = subprocess.run(cmd, capture_output=True, text=True, encoding='utf8')
         if worker.returncode:
             raise RuntimeError(worker.stderr)
