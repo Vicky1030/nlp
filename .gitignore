@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.cache/
+.env
+.env.*
+/models/
+/outputs/smoke_r8/
+/results/lora_demo.jsonl
+/data/derived/
+*.log

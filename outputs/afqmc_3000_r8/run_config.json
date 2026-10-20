@@ -1,0 +1,35 @@
+{
+  "model": ".\\models\\qwen3-1.7b",
+  "train": ".\\data\\afqmc_pilot\\train_3000.jsonl",
+  "validation": ".\\data\\afqmc_pilot\\validation_100.jsonl",
+  "output": ".\\outputs\\afqmc_3000_r8",
+  "rank": 8,
+  "alpha": 16,
+  "max_length": 256,
+  "epochs": 2.0,
+  "max_steps": -1,
+  "learning_rate": 0.0002,
+  "grad_accum": 8,
+  "seed": 42,
+  "dtype": "torch.bfloat16",
+  "train_count": 3000,
+  "train_dropped": 0,
+  "val_count": 100,
+  "val_dropped": 0,
+  "max_vram_reserved_gib": 3.428,
+  "train_metrics": {
+    "train_runtime": 5719.2775,
+    "train_samples_per_second": 1.049,
+    "train_steps_per_second": 0.131,
+    "total_flos": 3331137105469440.0,
+    "train_loss": 0.269061040793856,
+    "epoch": 2.0
+  },
+  "eval_metrics": {
+    "eval_loss": 0.2396591752767563,
+    "eval_runtime": 15.8199,
+    "eval_samples_per_second": 6.321,
+    "eval_steps_per_second": 6.321,
+    "epoch": 2.0
+  }
+}

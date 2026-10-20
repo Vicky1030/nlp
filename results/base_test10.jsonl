@@ -1,0 +1,10 @@
+{"id": 9, "sentence1": "如升级为网商贷用户而借呗的欠款怎么还", "sentence2": "我借呗已还清，为什么升级不了网商贷", "label": 0, "prediction": 0, "method": "base_4bit", "latency_ms": 989.499}
+{"id": 27, "sentence1": "手机关闭花宝贝怎么做", "sentence2": "怎样扫描手机支付宝", "label": 0, "prediction": 0, "method": "base_4bit", "latency_ms": 224.381}
+{"id": 32, "sentence1": "这个蚂蚁花呗能恢复正常用不", "sentence2": "我的蚂蚁花呗 怎么用不了", "label": 0, "prediction": 0, "method": "base_4bit", "latency_ms": 232.071}
+{"id": 34, "sentence1": "把你们花呗的电话给我", "sentence2": "给花呗打电话", "label": 1, "prediction": 0, "method": "base_4bit", "latency_ms": 194.403}
+{"id": 58, "sentence1": "美团能用花呗妈", "sentence2": "在美团怎么用花呗支付", "label": 0, "prediction": 0, "method": "base_4bit", "latency_ms": 203.035}
+{"id": 60, "sentence1": "蚂蚁借呗额度如何取消", "sentence2": "取消蚂蚁贷款", "label": 0, "prediction": 0, "method": "base_4bit", "latency_ms": 196.227}
+{"id": 63, "sentence1": "用花呗在淘宝买东西。淘宝还没到货就已经还款了。怎么办", "sentence2": "我用花呗买了东西但是我退货了 钱没到花呗我就还了 然后退回来的钱 会到哪里去", "label": 0, "prediction": 0, "method": "base_4bit", "latency_ms": 200.18}
+{"id": 67, "sentence1": "我的花呗无法使用 怎么回复使用", "sentence2": "为什么我的花呗还不能正常使用", "label": 0, "prediction": 0, "method": "base_4bit", "latency_ms": 201.311}
+{"id": 80, "sentence1": "蚂蚁借呗提前还一半钱", "sentence2": "蚂蚁借呗手续费", "label": 0, "prediction": 0, "method": "base_4bit", "latency_ms": 198.668}
+{"id": 83, "sentence1": "用话费付的钱，但是显示退款了，为什么花呗里面没有显示我的余额", "sentence2": "退到花呗为什么没有显示余额", "label": 0, "prediction": 0, "method": "base_4bit", "latency_ms": 202.152}

@@ -1,0 +1,35 @@
+{
+  "model": ".\\models\\qwen3-1.7b",
+  "train": ".\\data\\demo\\train.jsonl",
+  "validation": ".\\data\\demo\\validation.jsonl",
+  "output": ".\\outputs\\windows_smoke_r8",
+  "rank": 8,
+  "alpha": 16,
+  "max_length": 256,
+  "epochs": 2.0,
+  "max_steps": 5,
+  "learning_rate": 0.0002,
+  "grad_accum": 8,
+  "seed": 42,
+  "dtype": "torch.bfloat16",
+  "train_count": 16,
+  "train_dropped": 0,
+  "val_count": 4,
+  "val_dropped": 0,
+  "max_vram_reserved_gib": 3.428,
+  "train_metrics": {
+    "train_runtime": 80.9906,
+    "train_samples_per_second": 0.494,
+    "train_steps_per_second": 0.062,
+    "total_flos": 19158770903040.0,
+    "train_loss": 1.3487324386835098,
+    "epoch": 2.5
+  },
+  "eval_metrics": {
+    "eval_loss": 0.06172826141119003,
+    "eval_runtime": 2.4549,
+    "eval_samples_per_second": 1.629,
+    "eval_steps_per_second": 1.629,
+    "epoch": 2.5
+  }
+}

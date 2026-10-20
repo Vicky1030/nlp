@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.jsonl text eol=lf
+*.safetensors -text
+*.bin -text
+*.png -text
