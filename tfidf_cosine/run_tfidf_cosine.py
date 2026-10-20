@@ -22,19 +22,10 @@ if __name__ == "__main__":
         if hashlib.sha256(path.read_bytes()).hexdigest() != spec["sha256"]:
             raise ValueError(f"{name}: SHA-256 mismatch; do not re-split the unified data")
     entry = base / "src" / "run_tfidf_cosine.py"
-    output.mkdir(parents=True, exist_ok=False)
-    log_dir = output / "logs"
-    log_dir.mkdir()
     command = [sys.executable, str(entry), *args]
-    from datetime import datetime
-    started = datetime.now().astimezone().isoformat()
+    # The unified child owns directory creation and writes stage logs/manifest.
     result = subprocess.run(command, cwd=base, capture_output=True, text=True,
                             encoding="utf-8", errors="replace")
-    ended = datetime.now().astimezone().isoformat()
-    (log_dir / "run.log").write_text(json.dumps({"command": command, "cwd": str(base),
-        "interpreter": sys.executable, "started": started, "ended": ended,
-        "exit_code": result.returncode, "stdout": result.stdout,
-        "stderr": result.stderr}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     if result.stdout:
         print(result.stdout, end="")
     if result.stderr:

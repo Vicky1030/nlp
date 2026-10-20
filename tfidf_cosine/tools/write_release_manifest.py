@@ -11,9 +11,9 @@ MANIFEST = 'reports/release_sha256.json'
 def main():
     rows = []
     listed = subprocess.run(
-        ['git', 'ls-files', '--cached', '--', 'tfidf_cosine'],
+        ['git', 'ls-files', '-z', '--cached', '--', 'tfidf_cosine'],
         cwd=ROOT.parent, check=True, capture_output=True, text=True,
-        encoding='utf-8').stdout.splitlines()
+        encoding='utf-8').stdout.split('\0')
     prefix = 'tfidf_cosine/'
     paths = sorted(item[len(prefix):] for item in listed if item.startswith(prefix))
     for rel in paths:
@@ -22,7 +22,8 @@ def main():
         path = ROOT / Path(rel)
         if not path.is_file():
             raise SystemExit(f'Release file missing from worktree: {rel}')
-        data = path.read_bytes()
+        data = subprocess.run(['git', 'show', ':' + prefix + rel], cwd=ROOT.parent,
+                              check=True, capture_output=True).stdout
         rows.append({'path': rel,
                      'sha256': hashlib.sha256(data).hexdigest()})
     (ROOT / MANIFEST).write_text(

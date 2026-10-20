@@ -55,3 +55,4 @@ def iter_data(path):
 def load_data(path):
     """Return all records after validation. No text normalization."""
     return list(iter_data(path))
+

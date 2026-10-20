@@ -10,9 +10,9 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     manifest = json.loads((ROOT / 'reports/release_sha256.json').read_text(encoding='utf-8'))
     listed = subprocess.run(
-        ['git', 'ls-files', '--cached', '--', 'tfidf_cosine'],
+        ['git', 'ls-files', '-z', '--cached', '--', 'tfidf_cosine'],
         cwd=ROOT.parent, check=True, capture_output=True, text=True,
-        encoding='utf-8').stdout.splitlines()
+        encoding='utf-8').stdout.split('\0')
     prefix = 'tfidf_cosine/'
     expected = {item[len(prefix):] for item in listed
                 if item.startswith(prefix) and item != prefix + 'reports/release_sha256.json'}
@@ -23,7 +23,12 @@ def main():
         path = ROOT / Path(entry['path'])
         if not path.is_file():
             raise SystemExit(f"Release file missing: {entry['path']}")
-        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        data = path.read_bytes()
+        text_attr = subprocess.run(['git', 'check-attr', 'text', '--', str(path)],
+                                   cwd=ROOT, check=True, capture_output=True, text=True).stdout
+        if not text_attr.rstrip().endswith('unset'):
+            data = data.replace(b'\r\n', b'\n')
+        digest = hashlib.sha256(data).hexdigest()
         if digest != entry['sha256']:
             raise SystemExit(f"Release hash mismatch: {entry['path']}")
     print(f"Release manifest passed: {manifest['files']} files")

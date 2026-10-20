@@ -45,4 +45,5 @@ verification_runs/
 /artifacts/tfidf_cosine_full_run_final/run.log
 /artifacts/tfidf_cosine_full_run_final/run_manifest.json
 /provenance/closeout_runs/
+/report_materials/echarts_v6/generated_20261019_final02
 *.log

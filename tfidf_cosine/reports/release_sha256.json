@@ -1,9 +1,13 @@
 {
-  "files": 66,
+  "files": 74,
   "entries": [
     {
+      "path": ".gitattributes",
+      "sha256": "2465c3da5fed8d01967e449d7ca063914995c20addc8281952b1e68df4680074"
+    },
+    {
       "path": ".gitignore",
-      "sha256": "93791b3204ce71de97d19e2685019c03688a67c652e98ed2fd866296fef24ddb"
+      "sha256": "a039e307574747de38d1396cf88c0d03f88594c48039a3c94ad747a03608d519"
     },
     {
       "path": "DEMO.md",
@@ -11,7 +15,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "9701259a59d95cdf3ceebfcb67dc09e255f20ca242e92151f0748bb5f7416337"
+      "sha256": "5a79ea0bea3114fa93da6d7f8de72b2eaf58d341afa48c77a2a629a352eb1a75"
     },
     {
       "path": "TFIDF_STAGE1.md",
@@ -19,7 +23,7 @@
     },
     {
       "path": "artifacts/tfidf_cosine_full_run_final/stage1/artifacts/tfidf_cosine/char_1/metadata.json",
-      "sha256": "500a6efca7d550d89a893ddc610912827b36198219377d46a3c6c0101b57f259"
+      "sha256": "288830b8b772d4b4a43682248d181d9d176a427c5bebcd4a7cbe4699b22af1f3"
     },
     {
       "path": "artifacts/tfidf_cosine_full_run_final/stage1/artifacts/tfidf_cosine/char_1/vectorizer.joblib",
@@ -27,7 +31,7 @@
     },
     {
       "path": "artifacts/tfidf_cosine_full_run_final/stage1/artifacts/tfidf_cosine/char_1_2/metadata.json",
-      "sha256": "cea976dea16b0705a5af0429ae87ba5ac270f38803e01c3d8842c277c10e5e73"
+      "sha256": "eb15f1ff62b9bc8e731a292776bd13730530094340babb8697910ed171359b61"
     },
     {
       "path": "artifacts/tfidf_cosine_full_run_final/stage1/artifacts/tfidf_cosine/char_1_2/vectorizer.joblib",
@@ -43,7 +47,7 @@
     },
     {
       "path": "artifacts/tfidf_cosine_full_run_final/stage1/artifacts/tfidf_cosine/word_1/metadata.json",
-      "sha256": "ec6cd047de84b4bcf604dba755c30f319ea1c7a9f529419950975e0b5f551ec5"
+      "sha256": "3c8c6162c9d2ce53a53bac15356909de34c1d4b3ff50aa2005e43eb330aec70d"
     },
     {
       "path": "artifacts/tfidf_cosine_full_run_final/stage1/artifacts/tfidf_cosine/word_1/vectorizer.joblib",
@@ -91,7 +95,11 @@
     },
     {
       "path": "provenance/run_closeout_regression.py",
-      "sha256": "e3613583043b7bcc6f3001bddf0c6e2b9c11330183f9e3fea1118bd0a2f76609"
+      "sha256": "63e62b50f79614324eb21585d5824c7928b880d3ad23616e02399549f8c45081"
+    },
+    {
+      "path": "report_materials/TF-IDF＋余弦相似度方法流程图.png",
+      "sha256": "dc463828e69ce04f39057f956072b25180182cb3f5fb7b64969bace63e87d351"
     },
     {
       "path": "report_materials/echarts_v6/LICENSE-Apache-2.0.txt",
@@ -103,7 +111,7 @@
     },
     {
       "path": "report_materials/echarts_v6/MacroF1_ECharts.html",
-      "sha256": "6e5c0fc9e946ec175adaf8f82ead9e78f67bef7fea4170577158d71b2ff0c102"
+      "sha256": "803c129c775908c1c495bfc116bf4706556e3ef2b54c1a3870c797921c47cb29"
     },
     {
       "path": "report_materials/echarts_v6/MacroF1_ECharts.png",
@@ -123,11 +131,11 @@
     },
     {
       "path": "report_materials/echarts_v6/THIRD_PARTY_RESOURCES.md",
-      "sha256": "ba79430f829dad5284782e639f2ed40ea2b62f62c0c23eb570c2132847300664"
+      "sha256": "ac8a8b9ec8fc1a86d355a4cf5affead47bcf1e3a7981a4fe7df2c39ce777197f"
     },
     {
       "path": "report_materials/echarts_v6/Threshold_MacroF1_LegendBottom.html",
-      "sha256": "ce880564ec2465bfa159f6ec7a5b232888ff5476b373a373980bb9729703c4cc"
+      "sha256": "b7727ed6c1e5795189e0244377c71308a2e1d6142545086d204c8b96f0005c20"
     },
     {
       "path": "report_materials/echarts_v6/Threshold_MacroF1_LegendBottom.png",
@@ -135,11 +143,11 @@
     },
     {
       "path": "report_materials/echarts_v6/chart_data_summary.json",
-      "sha256": "91d30dde1877e44d600e8e068cc30b1f04626e0d97655df3fff308654592cc4c"
+      "sha256": "ae1e0c61c8ca3a8401424c9117c22309c703863a4f3856c5daa772106e644700"
     },
     {
       "path": "report_materials/echarts_v6/echarts.min.js",
-      "sha256": "873a889da5ecf780d88ce440cebcc75b57ef405b2cf08f78f43554f864b1b2bd"
+      "sha256": "bf4a223524e40b77c304bec67e1222cf551f14880cf42c69dc046558e11c07b1"
     },
     {
       "path": "report_materials/echarts_v6/export_echarts_png.mjs",
@@ -150,16 +158,12 @@
       "sha256": "027f6f00bc87c7d236b33937205178b81890eb686823f6eb8f4ce7f29d48f923"
     },
     {
-      "path": "report_materials/echarts_v6/generated_20261019_final02",
-      "sha256": "0cc82ec6f92c7dd3332e2cbcd09343bda6b2f6a46871580734432a0a5f43d953"
-    },
-    {
       "path": "report_materials/figures/confusion_matrix.csv",
-      "sha256": "e7ab37c7a150c349ef8806d12f285694982452b891104ae487a8a7bde0005e4c"
+      "sha256": "0b88d8dfb7c4899eeb5e15d7506a6ac709e7dafc8899a5db1f2e51056d208f58"
     },
     {
       "path": "report_materials/figures/evaluation_metrics.csv",
-      "sha256": "721210e9624753821f42da76c7baf647b9d892d0f7e7c3c73f822f98061e7a3b"
+      "sha256": "160bda5807d2b00a110e73c6a120f3e06de8a42ad7a40d147f9b3bdedadb1c9c"
     },
     {
       "path": "report_materials/figures/evaluation_metrics.png",
@@ -175,7 +179,23 @@
     },
     {
       "path": "report_materials/figures/validation_best_comparison.csv",
-      "sha256": "f907bb757feff85c33ab71a142e4872dd47bd978c9df4ee3b2a8961c1bc2505e"
+      "sha256": "de4cf0a8e690737f207182ca3d34213110c04e0629b8e8422a24b3586ab642b9"
+    },
+    {
+      "path": "report_materials/三种TF-IDF表示的验证结果与最佳配置选择.png",
+      "sha256": "d4a4cad7574589b24cfe9256a00ede97c0e73ec2e4b2b2f4ca62ae036bfbfe4d"
+    },
+    {
+      "path": "report_materials/关键实现说明.md",
+      "sha256": "0760f066283fddd816c0e2f9b911475e61c5310f78c6f5d55aa4605720226126"
+    },
+    {
+      "path": "report_materials/参数比较分析.md",
+      "sha256": "019d068f4d3e4b85674a6e69f9cbb74bd3d6510645c9495cefdbeda7568fbe09"
+    },
+    {
+      "path": "report_materials/成本与延迟说明.md",
+      "sha256": "7497ad831f5d0d4cd54d0466aa7b234adcadff570846d0dc9b5b0f40298df5b9"
     },
     {
       "path": "reports/processed_hashes.json",
@@ -191,7 +211,7 @@
     },
     {
       "path": "run_tfidf_cosine.py",
-      "sha256": "d8d5336e32975c5de303b30d6253ae9a69b6805937e16a1a08c4b74c1d14bfa9"
+      "sha256": "2c9879a156d863c9ceb77ac44c30ce0f85609e0d22067810ef7b9e4d7bbce241"
     },
     {
       "path": "src/analyze_tfidf_errors.py",
@@ -199,7 +219,7 @@
     },
     {
       "path": "src/data_loader.py",
-      "sha256": "caa5116d4eef31aac5cc708f38d01e34b68cf06a621df6ea98955a228f62afc0"
+      "sha256": "89fc98b3b4ae0d87b9d58f0217be99ad98ff1a4c8b0da32ab1f518a18e012068"
     },
     {
       "path": "src/extract_tfidf_case_evidence.py",
@@ -207,15 +227,27 @@
     },
     {
       "path": "src/inspect_data.py",
-      "sha256": "d4efc78ea4fe23761b568a24b52b098ce37f84d50f98c76628a762824487b7c2"
+      "sha256": "c89723eb469f56cca003d735e18f4ebb134421469e261fdf46daa8652e18af4e"
     },
     {
       "path": "src/plot_tfidf_results.py",
       "sha256": "73274d83aab6577b97c2d8e19d7c1bce6657ae882159d4419a1bc11e91694669"
     },
     {
+      "path": "src/prepare_c_negation_candidates.py",
+      "sha256": "605c1ed1a353a739d5bcc1e247efc62c2c43cedfb9c1546e3da9ec3f2650db02"
+    },
+    {
       "path": "src/prepare_data.py",
-      "sha256": "796ce3cb210d5ef9c904705ea42e3b6c0aec190b128c37d8fbce98ddd81311f1"
+      "sha256": "3bc3b313dc9e97c036404d616b73e85fdbec8d1dfd8db4cf10424d8397e4fe3f"
+    },
+    {
+      "path": "src/prepare_tfidf_additional_candidates.py",
+      "sha256": "53c03b9a9100f79b283a1889d7d3d1067b4cd813715d7d9ef503591e7f733efb"
+    },
+    {
+      "path": "src/prepare_tfidf_error_review.py",
+      "sha256": "2d50956ca492da37dfe39e177afe760cbf4daf784ef369ae57c661bb1dada966"
     },
     {
       "path": "src/requirements-tfidf-analysis.txt",
@@ -243,7 +275,7 @@
     },
     {
       "path": "src/validate_data.py",
-      "sha256": "a38c6b147cb2c9c891e12c9fd7f1da08ccef34af59e60a11f754adac84842231"
+      "sha256": "1d37ce95a1ca6664fa6620c3fac9480caba8a95873848e3fea1d5ceaa0809867"
     },
     {
       "path": "src/validate_tfidf_predictions.py",
@@ -255,7 +287,7 @@
     },
     {
       "path": "tools/check_release_manifest.py",
-      "sha256": "b71ca3bbd3d168cc298c0f7b85e98e7af38a7d3f5982e36b57e25336539bafae"
+      "sha256": "934e22e133f610bcba589f3a35e4ce6e5d3f8b9461aa7b8ba27f17f32975de45"
     },
     {
       "path": "tools/verify_release.py",
@@ -263,7 +295,7 @@
     },
     {
       "path": "tools/write_release_manifest.py",
-      "sha256": "95a5f6a31a4f04a083df4b9f674e6a8257c706ebb2be6642c79c6bc7c0419ca1"
+      "sha256": "273aeb18fd8880db071dde0350879302fc7d1c0741ad78cce55442c9205f71e1"
     }
   ]
 }

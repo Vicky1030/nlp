@@ -201,3 +201,4 @@ def main():
     print(json.dumps({'status':res['status'],'counts':res.get('counts'),'checks':[{k:c[k] for k in ('name','status')} for c in res['checks']],'error':res.get('error')},ensure_ascii=False,indent=2)); return int(res['status']=='failed')
 
 if __name__=='__main__': sys.exit(main())
+

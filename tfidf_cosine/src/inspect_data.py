@@ -266,3 +266,4 @@ def main():
     print(json.dumps({'reports':[str(t) for t in targets],'summary':{n:{k:f[k] for k in ('total_records','valid_records','anomalous_records','unchanged')} for n,f in files.items()}},ensure_ascii=False,indent=2))
 
 if __name__=='__main__': main()
+

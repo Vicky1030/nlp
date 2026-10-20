@@ -127,6 +127,9 @@ def equivalent(left, right, path="$", deltas=None) -> bool:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run focused nine-case evidence regressions.")
     parser.add_argument("--run-id", help="Optional safe, unique run directory name.")
+    parser.add_argument("--package-root", type=Path, required=True,
+                        help="External complete delivery copy with local-only inputs/evidence; never the original")
+    parser.add_argument("--output-root", type=Path, required=True, help="New regression output directory")
     return parser.parse_args()
 
 
@@ -150,7 +153,16 @@ def resolve_run_id(requested: str | None) -> str:
 
 
 def main() -> int:
+    global ROOT, INPUTS, OLD_EVIDENCE, LOG_ROOT
     args = parse_args()
+    ROOT = args.package_root.resolve()
+    INPUTS = ROOT / "error_analysis" / "inputs"
+    OLD_EVIDENCE = ROOT / "error_analysis" / "evidence"
+    missing = [p for p in PROTECTED if not (ROOT / p).is_file()]
+    if missing:
+        raise SystemExit("Missing external complete-package files: " + ", ".join(missing))
+    LOG_ROOT = args.output_root.resolve()
+    LOG_ROOT.mkdir(parents=True, exist_ok=False)
     runner_command = actual_runner_command()
     try:
         run_id = resolve_run_id(args.run_id)
@@ -161,7 +173,7 @@ def main() -> int:
         log_dir.mkdir(parents=False, exist_ok=False)
     except FileExistsError as exc:
         raise SystemExit(f"refusing to overwrite existing regression log directory: {log_dir}") from exc
-    temp_root = Path(tempfile.mkdtemp(prefix="tfidf_closeout_regression_"))
+    temp_root = Path(tempfile.mkdtemp(prefix="tfidf_closeout_regression_", dir=LOG_ROOT))
     records = []
     before = {p: sha(ROOT / p) for p in PROTECTED}
 
