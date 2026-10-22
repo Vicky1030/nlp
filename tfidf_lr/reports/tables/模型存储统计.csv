@@ -1,0 +1,7 @@
+﻿artifact,bytes,MiB,sha256,note
+TF-IDF元数据/char_1,1855,0.0017690658569335938,49c956ca2ee8a98a3a79ddf76e57e2a09137f850890f18cc116f39a616ea20e6,metadata JSON; vectorizer object size listed separately below
+TF-IDF元数据/char_1_2,1858,0.0017719268798828125,ebe2d1877bb2f27a915fcb2dfdbc28be820ca23ddb901cd9f58a97ee4a75a220,metadata JSON; vectorizer object size listed separately below
+TF-IDF元数据/word_1,2036,0.001941680908203125,58b42b3e7891097732c3d91d8a47fe0aa3ad8441bebc8bdcfc94dd8c45241a37,metadata JSON; vectorizer object size listed separately below
+获选向量器对象,774708,0.7388191223144531,bf0e9d5ade8cc13cb2d619a3ec226014f472e8b307b64a39aad90d011ff10db5,joblib文件大小，不代表运行内存
+获选LR模型对象,627403,0.5983381271362305,8a5bafc061b0d49f436471c85b58d7426537d1b8e6b5038a625729d70579e992,joblib文件大小，不代表运行内存
+获选向量器+LR对象,1402111,1.3371572494506836,,两个对象文件大小之和；无合并文件哈希

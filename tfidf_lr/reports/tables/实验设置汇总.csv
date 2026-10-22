@@ -1,0 +1,21 @@
+﻿section,config_id,representation,C,class_weight,solver,penalty,fit_intercept,intercept_scaling,dual,max_iter,tol,random_state,l1_ratio,n_jobs,verbose,warm_start,threshold,source
+所有候选配置,char_1__C0p1__cw_none,char_1,0.1,None,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,char_1__C0p1__cw_balanced,char_1,0.1,balanced,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,char_1__C1p0__cw_none,char_1,1.0,None,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,char_1__C1p0__cw_balanced,char_1,1.0,balanced,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,char_1__C10p0__cw_none,char_1,10.0,None,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,char_1__C10p0__cw_balanced,char_1,10.0,balanced,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,char_1_2__C0p1__cw_none,char_1_2,0.1,None,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,char_1_2__C0p1__cw_balanced,char_1_2,0.1,balanced,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,char_1_2__C1p0__cw_none,char_1_2,1.0,None,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,char_1_2__C1p0__cw_balanced,char_1_2,1.0,balanced,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,char_1_2__C10p0__cw_none,char_1_2,10.0,None,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,char_1_2__C10p0__cw_balanced,char_1_2,10.0,balanced,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,word_1__C0p1__cw_none,word_1,0.1,None,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,word_1__C0p1__cw_balanced,word_1,0.1,balanced,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,word_1__C1p0__cw_none,word_1,1.0,None,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,word_1__C1p0__cw_balanced,word_1,1.0,balanced,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,word_1__C10p0__cw_none,word_1,10.0,None,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+所有候选配置,word_1__C10p0__cw_balanced,word_1,10.0,balanced,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage1/model_index.json
+全部模型固定参数,,,,,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,,stage2/selected_config.json lr_parameters；与stage1训练代码核对
+最终获选配置,char_1_2__C1p0__cw_balanced,char_1_2,1.0,balanced,liblinear,l2,True,1,False,5000,0.0001,42,0.0,None,0,False,0.53,stage2/selected_config.json
