@@ -8,6 +8,9 @@ from pathlib import Path
 if __name__ == "__main__":
     base = Path(__file__).resolve().parent
     args = sys.argv[1:]
+    entry = base / "src" / "run_tfidf_cosine.py"
+    if "--help" in args or "-h" in args:
+        raise SystemExit(subprocess.call([sys.executable, '-B', str(entry), *args]))
     if "--data-dir" not in args or "--output-root" not in args:
         raise SystemExit("--data-dir and --output-root are required")
     data_dir = Path(args[args.index("--data-dir") + 1]).resolve()
@@ -21,8 +24,7 @@ if __name__ == "__main__":
             raise FileNotFoundError(f"Missing external unified input: {path}")
         if hashlib.sha256(path.read_bytes()).hexdigest() != spec["sha256"]:
             raise ValueError(f"{name}: SHA-256 mismatch; do not re-split the unified data")
-    entry = base / "src" / "run_tfidf_cosine.py"
-    command = [sys.executable, str(entry), *args]
+    command = [sys.executable, '-B', str(entry), *args]
     # The unified child owns directory creation and writes stage logs/manifest.
     result = subprocess.run(command, cwd=base, capture_output=True, text=True,
                             encoding="utf-8", errors="replace")

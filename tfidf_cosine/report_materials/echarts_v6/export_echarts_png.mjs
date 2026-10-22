@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { pathToFileURL, fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
 function arg(name, fallback = null) {
   const i = process.argv.indexOf(name);
@@ -29,8 +30,14 @@ for (const file of [...htmlFiles.map(f => path.join(htmlDir, f)), path.join(html
   try { await fs.access(file); } catch (e) { if (e.code === 'ENOENT') throw new Error(`缺少HTML或必要资源: ${file}`); throw e; }
 }
 let chromium;
-try { ({ chromium } = await import('playwright')); }
-catch (e) { throw new Error(`无法加载项目依赖 playwright，请先在项目根目录执行 npm install: ${e.message}`); }
+try {
+  const depsDir = arg('--node-deps-dir', null);
+  if (depsDir) {
+    const require = createRequire(path.join(path.resolve(depsDir), 'package.json'));
+    ({ chromium } = require('playwright'));
+  } else { ({ chromium } = await import('playwright')); }
+}
+catch (e) { throw new Error(`无法加载 playwright，请在包外 npm ci 并使用 --node-deps-dir 指定依赖目录: ${e.message}`); }
 if (browserPath) {
   try { await fs.access(path.resolve(browserPath)); } catch (e) { throw new Error(`--browser-path 不存在或不可访问: ${path.resolve(browserPath)}`); }
 }

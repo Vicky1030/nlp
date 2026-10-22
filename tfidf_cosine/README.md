@@ -14,9 +14,19 @@ PowerShell examples below start at the repository root and run from this method 
 
 ```powershell
 Set-Location .\tfidf_cosine
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r .\requirements.txt
-.\.venv\Scripts\python.exe -B -X utf8 .\tools\check_processed.py --data-dir "D:\authorized\afqmc\processed"
+$Work = 'D:\TFIDF_Cosine_runs\public_01'
+if (Test-Path $Work) { throw 'Choose a new work directory' }
+New-Item -ItemType Directory -Path $Work,"$Work\temp","$Work\pip-cache","$Work\npm-cache","$Work\browsers" | Out-Null
+$env:TEMP = "$Work\temp"
+$env:TMP = "$Work\temp"
+$env:PIP_CACHE_DIR = "$Work\pip-cache"
+$env:MPLCONFIGDIR = "$Work\matplotlib-cache"
+$env:PLAYWRIGHT_BROWSERS_PATH = "$Work\browsers"
+$env:PYTHONDONTWRITEBYTECODE = '1'
+python -B -m venv "$Work\venv"
+$Py = "$Work\venv\Scripts\python.exe"
+& $Py -B -m pip install -r .\requirements.txt
+& $Py -B -X utf8 .\tools\check_processed.py --data-dir "D:\authorized\afqmc\processed"
 ```
 
 No Node.js, Playwright, browser, or model service is required for the Python experiments. These dependencies are optional for re-exporting the supplied ECharts files.
@@ -27,7 +37,7 @@ After the environment and all three verified external data files are ready, this
 
 ```powershell
 Set-Location .\tfidf_cosine
-.\.venv\Scripts\python.exe -B -X utf8 .\run_tfidf_cosine.py --data-dir "D:\authorized\afqmc\processed" --output-root ".\reproduced\full_01"
+& $Py -B -X utf8 .\run_tfidf_cosine.py --data-dir "D:\authorized\afqmc\processed" --output-root "$Work\full_01"
 ```
 
 It prints the selected method, representation and threshold, prediction count, metrics, and output paths. Failure stops the pipeline with a nonzero exit. Output directories must be new and are never overwritten. The expected historical check is `tfidf_cosine`, `char_1_2`, threshold `0.28`, 4,316 evaluation rows, Accuracy about `0.603105`, Macro-F1 about `0.557542`, and `[[1994,984],[729,609]]`; these are comparison references, not hard-coded outputs.
@@ -38,7 +48,7 @@ After the environment and the existing unified evaluation file are ready, the fo
 
 ```powershell
 Set-Location .\tfidf_cosine
-.\.venv\Scripts\python.exe -B -X utf8 .\src\run_tfidf_stage3.py --config ".\artifacts\tfidf_cosine_full_run_final\stage2\artifacts\tfidf_cosine\selected_config.json" --evaluation "D:\authorized\afqmc\processed\evaluation.jsonl" --output-root ".\reproduced\quick_01"
+& $Py -B -X utf8 .\src\run_tfidf_stage3.py --config ".\artifacts\tfidf_cosine_full_run_final\stage2\artifacts\tfidf_cosine\selected_config.json" --evaluation "D:\authorized\afqmc\processed\evaluation.jsonl" --output-root "$Work\quick_01"
 ```
 
 The final prediction and similarity files include source sentences and labels. Keep them local unless data-sharing permission is confirmed.
@@ -59,13 +69,28 @@ Candidate-review sources `prepare_tfidf_error_review.py`, `prepare_tfidf_additio
 
 ## Optional analysis and figures
 
-All commands below run from `tfidf_cosine` and use new, unused output directories. Run the complete command above first to create `reproduced/full_01`. Analysis needs `requirements-tfidf-analysis.txt` in addition to the base dependencies. Generated evaluation outputs may contain source sentences.
+All commands below run from `tfidf_cosine` and use new, unused output directories. Keep the environment, dependencies, caches, logs and generated results on D: outside both the repository and the delivery package. Run the complete command above first to create `$Work/full_01`. Analysis needs `requirements-tfidf-analysis.txt` in addition to the base dependencies. Generated evaluation outputs may contain source sentences.
 
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r .\requirements-tfidf-analysis.txt
-.\.venv\Scripts\python.exe -B -X utf8 .\src\analyze_tfidf_errors.py --predictions .\reproduced\full_01\stage3\results\tfidf_cosine\evaluation_predictions.jsonl --similarity .\reproduced\full_01\stage3\results\tfidf_cosine\evaluation_similarity.jsonl --config .\reproduced\full_01\stage2\artifacts\tfidf_cosine\selected_config.json --output-dir .\reproduced\errors_01
-.\.venv\Scripts\python.exe -B -X utf8 .\src\plot_tfidf_results.py --train "D:\authorized\afqmc\processed\train.jsonl" --threshold-table .\artifacts\tfidf_cosine_full_run_final\stage2\results\tfidf_cosine\threshold_comparison.csv --summary .\artifacts\tfidf_cosine_full_run_final\stage2\results\tfidf_cosine\representation_summary.csv --stage3-report .\reproduced\full_01\stage3\reports\tfidf_cosine_stage3.json --predictions .\reproduced\full_01\stage3\results\tfidf_cosine\evaluation_predictions.jsonl --error-report .\reproduced\errors_01\error_analysis.json --output-dir .\reproduced\plots_01
-.\.venv\Scripts\python.exe -B -X utf8 .\src\extract_tfidf_case_evidence.py --evaluation "D:\authorized\afqmc\processed\evaluation.jsonl" --predictions .\reproduced\full_01\stage3\results\tfidf_cosine\evaluation_predictions.jsonl --similarity .\reproduced\full_01\stage3\results\tfidf_cosine\evaluation_similarity.jsonl --config .\reproduced\full_01\stage2\artifacts\tfidf_cosine\selected_config.json --vectorizer .\reproduced\full_01\stage1\artifacts\tfidf_cosine\char_1_2\vectorizer.joblib --metadata .\reproduced\full_01\stage1\artifacts\tfidf_cosine\char_1_2\metadata.json --output-dir .\reproduced\case_evidence_01
+& $Py -m pip install -r .\requirements-tfidf-analysis.txt
+& $Py -B -X utf8 .\src\analyze_tfidf_errors.py --predictions "$Work\full_01\stage3\results\tfidf_cosine\evaluation_predictions.jsonl" --similarity "$Work\full_01\stage3\results\tfidf_cosine\evaluation_similarity.jsonl" --config "$Work\full_01\stage2\artifacts\tfidf_cosine\selected_config.json" --output-dir "$Work\errors_01"
+& $Py -B -X utf8 .\src\plot_tfidf_results.py --train "D:\authorized\afqmc\processed\train.jsonl" --threshold-table .\artifacts\tfidf_cosine_full_run_final\stage2\results\tfidf_cosine\threshold_comparison.csv --summary .\artifacts\tfidf_cosine_full_run_final\stage2\results\tfidf_cosine\representation_summary.csv --stage3-report "$Work\full_01\stage3\reports\tfidf_cosine_stage3.json" --predictions "$Work\full_01\stage3\results\tfidf_cosine\evaluation_predictions.jsonl" --error-report "$Work\errors_01\error_analysis.json" --output-dir "$Work\plots_01"
+& $Py -B -X utf8 .\src\extract_tfidf_case_evidence.py --evaluation "D:\authorized\afqmc\processed\evaluation.jsonl" --predictions "$Work\full_01\stage3\results\tfidf_cosine\evaluation_predictions.jsonl" --similarity "$Work\full_01\stage3\results\tfidf_cosine\evaluation_similarity.jsonl" --config "$Work\full_01\stage2\artifacts\tfidf_cosine\selected_config.json" --vectorizer "$Work\full_01\stage1\artifacts\tfidf_cosine\char_1_2\vectorizer.joblib" --metadata "$Work\full_01\stage1\artifacts\tfidf_cosine\char_1_2\metadata.json" --output-dir "$Work\case_evidence_01"
 ```
 
-To render the supplied flowchart afresh, pass the chosen output directory and (optionally) a font file: `python .\provenance\render_flowchart_closeout.py --output-dir .\reproduced\flowchart_01 --font .\report_materials\echarts_v6\ReportCJK.font`. PNG export of the supplied offline HTML charts is optional and requires Node, npm dependencies and Chromium; use `npm ci --cache .\npm-cache` and `node .\report_materials\echarts_v6\export_echarts_png.mjs --html-dir .\report_materials\echarts_v6 --output-dir .\reproduced\echarts_png_01`. The HTML is based on aggregate comparison data; the generator source is retained as an analysis reference, but its original full-result prediction input is local-only.
+To render the supplied flowchart afresh, pass a new external output directory:
+
+```powershell
+& $Py -B .\provenance\render_flowchart_closeout.py --output-dir "$Work\flowchart_01" --font .\report_materials\echarts_v6\ReportCJK.font
+```
+
+PNG export is optional and needs Node, Playwright and Chromium. Install dependencies outside the repository, then explicitly pass their location (use `--browser-path` if supplying an existing authorized Chromium executable):
+
+```powershell
+New-Item -ItemType Directory -Path "$Work\node-deps" | Out-Null
+Copy-Item .\package.json,.\package-lock.json -Destination "$Work\node-deps"
+npm ci --prefix "$Work\node-deps" --cache "$Work\npm-cache"
+node .\report_materials\echarts_v6\export_echarts_png.mjs --html-dir .\report_materials\echarts_v6 --node-deps-dir "$Work\node-deps" --output-dir "$Work\echarts_png_01"
+```
+
+The HTML uses aggregate comparisons. The generator's original sentence-bearing input remains local-only. See [the update provenance](provenance/UPDATE_20261022.md) for the verified delivery identity and public change scope. To verify that external complete delivery, use `& $Py -B .\tools\verify_package.py --package-root "D:\path\to\complete_delivery"`; to verify this public release, use `& $Py -B .\tools\check_release_manifest.py`.

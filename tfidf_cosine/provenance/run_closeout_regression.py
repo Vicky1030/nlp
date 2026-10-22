@@ -55,7 +55,9 @@ def sha(path: Path) -> str:
     return h.hexdigest()
 
 
-def command_for(output: Path, inputs: Path = INPUTS) -> list[str]:
+def command_for(output: Path, inputs: Path | None = None) -> list[str]:
+    if inputs is None:
+        inputs = INPUTS
     return [
         sys.executable, "-B", "-X", "utf8",
         str(ROOT / "src" / "extract_tfidf_case_evidence.py"),
@@ -82,15 +84,15 @@ def execute(name: str, command: list[str], cwd: Path, expected_exit: int,
     return {
         "name": name,
         "run_id": run_id,
-        "log_directory": log_dir.relative_to(ROOT).as_posix(),
+        "log_directory": str(log_dir),
         "interpreter": sys.executable,
         "command": command,
         "working_directory": str(cwd),
         "started_at": started,
         "ended_at": ended,
         "exit_code": result.returncode,
-        "stdout": stdout_path.relative_to(ROOT).as_posix(),
-        "stderr": stderr_path.relative_to(ROOT).as_posix(),
+        "stdout": str(stdout_path),
+        "stderr": str(stderr_path),
         "expected_exit_code": expected_exit,
         "expectation_met": result.returncode == expected_exit,
         "stdout_text": result.stdout.decode("utf-8", "replace"),
@@ -103,7 +105,7 @@ def write_check_output(name: str, log_dir: Path, stdout: str = "", stderr: str =
     stderr_path = log_dir / f"{name}.stderr.txt"
     stdout_path.write_text(stdout, encoding="utf-8")
     stderr_path.write_text(stderr, encoding="utf-8")
-    return stdout_path.relative_to(ROOT).as_posix(), stderr_path.relative_to(ROOT).as_posix()
+    return str(stdout_path), str(stderr_path)
 
 
 def equivalent(left, right, path="$", deltas=None) -> bool:
@@ -162,6 +164,8 @@ def main() -> int:
     if missing:
         raise SystemExit("Missing external complete-package files: " + ", ".join(missing))
     LOG_ROOT = args.output_root.resolve()
+    if LOG_ROOT == ROOT or ROOT in LOG_ROOT.parents:
+        raise SystemExit("--output-root must be outside the delivery package")
     LOG_ROOT.mkdir(parents=True, exist_ok=False)
     runner_command = actual_runner_command()
     try:
@@ -173,7 +177,7 @@ def main() -> int:
         log_dir.mkdir(parents=False, exist_ok=False)
     except FileExistsError as exc:
         raise SystemExit(f"refusing to overwrite existing regression log directory: {log_dir}") from exc
-    temp_root = Path(tempfile.mkdtemp(prefix="tfidf_closeout_regression_", dir=LOG_ROOT))
+    temp_root = Path(tempfile.mkdtemp(prefix="tfidf_closeout_regression_", dir=log_dir))
     records = []
     before = {p: sha(ROOT / p) for p in PROTECTED}
 
@@ -285,7 +289,7 @@ def main() -> int:
         "ended_at": now(),
         "interpreter": sys.executable,
         "python": sys.version,
-        "log_directory": log_dir.relative_to(ROOT).as_posix(),
+        "log_directory": str(log_dir),
         "runner_command": runner_command,
         "working_directory": str(ROOT),
         "temporary_directory": str(temp_root),

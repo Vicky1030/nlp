@@ -6,9 +6,12 @@
 
 From the repository root:
 
+First complete the README environment setup; `$Py` and `$Work` refer to that
+external D: environment and work directory. Keep demo outputs outside the repository.
+
 ```powershell
 Set-Location .\tfidf_cosine
-.\.venv\Scripts\python.exe -B -X utf8 .\run_tfidf_cosine.py --data-dir "D:\authorized\afqmc\processed" --output-root ".\reproduced\demo_full_01"
+& $Py -B -X utf8 .\run_tfidf_cosine.py --data-dir "D:\authorized\afqmc\processed" --output-root "$Work\demo_full_01"
 ```
 
 **Say:** “We compare paired sentences using TF-IDF vectors and cosine similarity. The full run fits on train, checks 306 preset configurations on validation, freezes the choice, then predicts evaluation. This takes longer than the clip, so I am showing the real startup and completed output with the middle omitted.” Only accelerate or cut the recording if this edit is disclosed. Point to the actual selected configuration, prediction count, and metrics printed by the run.
@@ -19,7 +22,7 @@ If recording only the quick inference, use:
 
 ```powershell
 Set-Location .\tfidf_cosine
-.\.venv\Scripts\python.exe -B -X utf8 .\src\run_tfidf_stage3.py --config ".\artifacts\tfidf_cosine_full_run_final\stage2\artifacts\tfidf_cosine\selected_config.json" --evaluation "D:\authorized\afqmc\processed\evaluation.jsonl" --output-root ".\reproduced\demo_quick_01"
+& $Py -B -X utf8 .\src\run_tfidf_stage3.py --config ".\artifacts\tfidf_cosine_full_run_final\stage2\artifacts\tfidf_cosine\selected_config.json" --evaluation "D:\authorized\afqmc\processed\evaluation.jsonl" --output-root "$Work\demo_quick_01"
 ```
 
 **Say:** “This quick check loads the already frozen model and threshold. It does not redo fitting or configuration selection.” Do not present it as a full reproduction.
