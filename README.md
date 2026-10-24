@@ -1,13 +1,14 @@
-# Qwen3-1.7B AFQMC 语义匹配：统一基准与双秩 QLoRA
+# Qwen3-1.7B AFQMC 语义匹配：统一基准与 QLoRA 对比
 
 本项目记录在统一协议下完成的 Qwen3-1.7B 中文语义匹配实验。本版在上一版 P0 探索性实验的基础上，对齐了正式 Zero-shot 提示词、消息结构、生成参数、解析规则、模型版本和验证集，然后完成：
 
 - Qwen3-1.7B 4-bit NF4 Zero-shot 基准；
 - 3,000 条 AFQMC 数据的 QLoRA rank=8 / alpha=16 训练；
 - 3,000 条 AFQMC 数据的 QLoRA rank=16 / alpha=32 训练；
-- 三个模型在同一份 3,433 条 validation 上的完整逐条预测和评估。
+- 30,899 条 AFQMC 数据的 QLoRA rank=16 / alpha=32 全量训练；
+- 四个模型在同一份 3,433 条 validation 上的完整逐条预测和评估。
 
-> **本次提交范围：** 只包含协议对齐后的 NF4 Base、3,000 条 r8 和 3,000 条 r16 实验。30,899 条 rank=16 训练及其结果保留在本地 `full_train_v1` 命名空间，将在后续单独整理和提交；本文不使用那部分结果。
+> **当前公开范围：** 包含协议对齐后的 NF4 Base、3,000 条 r8、3,000 条 r16，以及 30,899 条 r16 实验。仓库保留复现所需代码、配置、最终 Adapter、训练日志、逐条预测和评估指标；基础模型、可恢复 checkpoint 和 smoke 产物不纳入版本控制。
 
 ## 1. 任务与统一协议
 
@@ -49,7 +50,7 @@ Zero-shot 基准只加载基础模型，不加载 Adapter；这里的 Zero-shot 
 
 ## 2. 公平对比设计
 
-本版主表中的 Base、r8 和 r16 均在同一台机器上使用以下共同条件：
+本版主表中的 Base 和三组 QLoRA 实验均在同一台机器上使用以下共同条件：
 
 - 相同 Qwen3-1.7B 本地权重与模型组合指纹；
 - 相同 3,433 条 AFQMC validation 及样本顺序；
@@ -57,7 +58,9 @@ Zero-shot 基准只加载基础模型，不加载 Adapter；这里的 Zero-shot 
 - 相同 4-bit NF4 加载方式与 BF16 计算类型；
 - 相同生成参数、严格解析规则和评估程序。
 
-因此，Base 与两个 QLoRA 模型之间的主要变化是是否加载 Adapter，以及 Adapter 的 rank/alpha。
+因此，Base 与 QLoRA 模型之间的主要变化是是否加载 Adapter；两组 3,000 条实验用于比较 rank/alpha，两个 r16/a32 实验用于比较训练数据规模。除训练集规模外，30,899 条 r16 与 3,000 条 r16 使用相同的核心训练和推理配置。
+
+全文按“统一 NF4 Baseline → 3,000 条 r8/r16 秩对比 → 3,000 与 30,899 条 r16 数据规模对比”的顺序组织，新增的全量实验作为原有实验链路的延伸，不替代前面的基准和双秩结果。
 
 未量化 BF16 Zero-shot 结果可作为提示工程参考，但不能直接作为本项目 QLoRA 的增益基线。BF16 与 NF4 会改变输出分布；本项目判断微调收益时只比较 `NF4 Base` 与 `NF4 Base + Adapter`。
 
@@ -83,17 +86,19 @@ Zero-shot 基准只加载基础模型，不加载 Adapter；这里的 Zero-shot 
 ├── outputs/b_aligned_v1/
 │   ├── qlora_r8_a16_retry1/       # r8/a16 最终 Adapter、配置与训练日志
 │   └── qlora_r16_a32/             # r16/a32 最终 Adapter、配置与训练日志
+├── outputs/full_train_v1/
+│   └── qlora_r16_a32_30899/       # 30,899 条 r16/a32 Adapter、配置与训练日志
 ├── results/b_aligned_v1/validation/
 │   ├── base_4bit.*                # NF4 Base 逐条结果、调用记录和运行摘要
 │   ├── lora_r8_a16.*              # r8 完整 validation 结果
 │   └── lora_r16_a32.*             # r16 完整 validation 结果
-└── reports/b_aligned_v1/
-    ├── base_4bit_metrics.json
-    ├── lora_r8_a16_metrics.json
-    └── lora_r16_a32_metrics.json
+├── results/full_train_v1/validation/
+│   └── lora_r16_a32_30899.*        # 全量训练 r16 完整 validation 结果
+├── reports/b_aligned_v1/           # Base 与 3,000 条实验指标
+└── reports/full_train_v1/          # 30,899 条 r16 实验指标
 ```
 
-`models/` 不进入仓库，复现时按固定版本下载。`full_train_v1`、失败运行、诊断运行、控制台日志和可快速重跑的 smoke 产物不属于本次提交。
+`models/` 不进入仓库，复现时按固定版本下载。可恢复 checkpoint、失败运行、诊断运行和可快速重跑的 smoke 产物不进入版本控制。
 
 ## 4. 环境、模型与数据
 
@@ -150,8 +155,8 @@ python .\src\download_model.py `
 
 | 文件 | 样本数 | 标签 0 | 标签 1 | 用途 |
 |---|---:|---:|---:|---|
-| `data/afqmc_shared/train.jsonl` | 30,899 | 21,383 | 9,516 | 统一训练池；本次只取既有 3,000 条子集 |
-| `data/afqmc_shared/validation.jsonl` | 3,433 | 2,376 | 1,057 | Base、r8、r16 的共同完整验证集 |
+| `data/afqmc_shared/train.jsonl` | 30,899 | 21,383 | 9,516 | 全量 r16 训练集，也是 3,000 条子集的来源 |
+| `data/afqmc_shared/validation.jsonl` | 3,433 | 2,376 | 1,057 | Base 和三组 QLoRA 的共同完整验证集 |
 | `data/afqmc_shared/evaluation.jsonl` | 4,316 | 2,978 | 1,338 | 保留的最终评估集；本次没有使用 |
 | `data/afqmc_pilot/train_3000.jsonl` | 3,000 | 2,077 | 923 | r8 与 r16 的共同训练集 |
 | `data/afqmc_pilot/validation_100.jsonl` | 100 | 69 | 31 | 训练结束后的 loss 检查 |
@@ -159,6 +164,7 @@ python .\src\download_model.py `
 关键文件哈希：
 
 ```text
+train.jsonl          f001da4af1a6f651ebc3ce4c01c135ddfdcd8b9cef246fe6695f74d627f3aad2
 train_3000.jsonl     39299587180176c0b2550dc173314e6311556f15bafdd0f79f50082764e638bb
 validation_100.jsonl 22475d9480f616ad9e58ef1096434f7abaaf9947f5b7367406ad1df3e195232c
 validation.jsonl     4fcdbfcc3dd252e7f385e6535510df0fbe8f488e0cf0d7681d380049a6b6b8f5
@@ -175,24 +181,24 @@ python .\src\validate_data.py `
 
 ## 5. 训练配置
 
-两个实验都从同一个原始基础模型独立开始，没有从另一组 Adapter 继续训练。
+三组实验都从同一个原始基础模型独立开始，没有从另一组 Adapter 继续训练。
 
-| 配置 | r8 | r16 |
-|---|---:|---:|
-| 训练样本 / 训练期验证 | 3,000 / 100 | 3,000 / 100 |
-| LoRA rank / alpha | 8 / 16 | 16 / 32 |
-| alpha / rank | 2.0 | 2.0 |
-| LoRA dropout | 0.05 | 0.05 |
-| 目标模块 | `q_proj`, `v_proj` | `q_proj`, `v_proj` |
-| 基础模型加载 | 4-bit NF4 + double quant | 4-bit NF4 + double quant |
-| 计算类型 | BF16 | BF16 |
-| epoch / optimizer step | 2 / 750 | 2 / 750 |
-| 单卡 batch / 梯度累积 | 1 / 8 | 1 / 8 |
-| max length | 256 | 256 |
-| 学习率 / 优化器 | 2e-4 / AdamW | 2e-4 / AdamW |
-| seed / data seed | 42 / 42 | 42 / 42 |
-| 梯度检查点 | 开启 | 开启 |
-| max grad norm | 0.3 | 0.3 |
+| 配置 | 3,000 条 r8 | 3,000 条 r16 | 30,899 条 r16 |
+|---|---:|---:|---:|
+| 训练样本 / 训练期验证 | 3,000 / 100 | 3,000 / 100 | 30,899 / 100 |
+| LoRA rank / alpha | 8 / 16 | 16 / 32 | 16 / 32 |
+| alpha / rank | 2.0 | 2.0 | 2.0 |
+| LoRA dropout | 0.05 | 0.05 | 0.05 |
+| 目标模块 | `q_proj`, `v_proj` | `q_proj`, `v_proj` | `q_proj`, `v_proj` |
+| 基础模型加载 | 4-bit NF4 + double quant | 4-bit NF4 + double quant | 4-bit NF4 + double quant |
+| 计算类型 | BF16 | BF16 | BF16 |
+| epoch / optimizer step | 2 / 750 | 2 / 750 | 2 / 7,726 |
+| 单卡 batch / 梯度累积 | 1 / 8 | 1 / 8 | 1 / 8 |
+| max length | 256 | 256 | 256 |
+| 学习率 / 优化器 | 2e-4 / AdamW | 2e-4 / AdamW | 2e-4 / AdamW |
+| seed / data seed | 42 / 42 | 42 / 42 | 42 / 42 |
+| 梯度检查点 | 开启 | 开启 | 开启 |
+| max grad norm | 0.3 | 0.3 | 0.3 |
 
 训练脚本每 250 个 optimizer step 保存可恢复 checkpoint，拒绝覆盖非空输出目录，并在恢复时核对模型、数据、提示词和核心超参数。最终 Adapter 在训练结束后保存，训练期 validation 只用于 loss 检查。
 
@@ -244,7 +250,7 @@ python .\src\train_qlora.py `
   --output .\outputs\repro_b_aligned\qlora_r8_a16
 ```
 
-### 6.3 训练 rank=16 / alpha=32
+### 6.3 训练 3,000 条 rank=16 / alpha=32
 
 ```powershell
 python .\src\train_qlora.py `
@@ -258,7 +264,23 @@ python .\src\train_qlora.py `
   --output .\outputs\repro_b_aligned\qlora_r16_a32
 ```
 
-### 6.4 完整 validation 预测与评估
+### 6.4 训练 30,899 条 rank=16 / alpha=32
+
+```powershell
+python .\src\train_qlora.py `
+  --model .\models\qwen3-1.7b `
+  --train .\data\afqmc_shared\train.jsonl `
+  --validation .\data\afqmc_pilot\validation_100.jsonl `
+  --rank 16 --alpha 32 `
+  --max-length 256 --epochs 2 --max-steps -1 `
+  --learning-rate 0.0002 --grad-accum 8 --seed 42 `
+  --save-steps 250 `
+  --output .\outputs\repro_full_train\qlora_r16_a32_30899
+```
+
+如需恢复中断的训练，在其余参数保持不变时增加 `--resume-from-checkpoint auto`。
+
+### 6.5 完整 validation 预测与评估
 
 ```powershell
 python .\src\predict_lora.py `
@@ -277,6 +299,14 @@ python .\src\predict_lora.py `
   --output .\results\repro_b_aligned\lora_r16_a32.jsonl `
   --method lora_r16_a32
 
+python .\src\predict_lora.py `
+  --model .\models\qwen3-1.7b `
+  --adapter .\outputs\repro_full_train\qlora_r16_a32_30899\adapter `
+  --input .\data\afqmc_shared\validation.jsonl `
+  --max-samples 0 `
+  --output .\results\repro_full_train\lora_r16_a32_30899.jsonl `
+  --method lora_r16_a32_30899
+
 python .\src\evaluate.py `
   .\results\repro_b_aligned\lora_r8_a16.jsonl `
   --output .\reports\repro_b_aligned\lora_r8_a16_metrics.json
@@ -284,6 +314,10 @@ python .\src\evaluate.py `
 python .\src\evaluate.py `
   .\results\repro_b_aligned\lora_r16_a32.jsonl `
   --output .\reports\repro_b_aligned\lora_r16_a32_metrics.json
+
+python .\src\evaluate.py `
+  .\results\repro_full_train\lora_r16_a32_30899.jsonl `
+  --output .\reports\repro_full_train\lora_r16_a32_30899_metrics.json
 ```
 
 每次批量预测会同时生成三类文件：
@@ -300,7 +334,8 @@ python .\src\evaluate.py `
 |---|---:|---:|---:|---:|---:|---:|
 | Qwen3-1.7B NF4 Zero-shot | 62.6566% | 58.9861% | 41.6605% | 53.1693% | 46.7165% | 0.0000% |
 | 3,000 条 QLoRA r8/a16 | 73.3178% | 65.3152% | 59.6974% | 41.0596% | 48.6547% | 0.0000% |
-| 3,000 条 QLoRA r16/a32 | **74.1625%** | **67.2411%** | **60.6516%** | **45.7900%** | **52.1833%** | 0.0000% |
+| 3,000 条 QLoRA r16/a32 | 74.1625% | 67.2411% | **60.6516%** | 45.7900% | 52.1833% | 0.0000% |
+| 30,899 条 QLoRA r16/a32 | **75.9977%** | **72.4561%** | 60.1747% | **65.1845%** | **62.5795%** | 0.0000% |
 
 以 `[[TN, FP], [FN, TP]]` 表示混淆矩阵：
 
@@ -308,18 +343,21 @@ python .\src\evaluate.py `
 NF4 Base：[[1589, 787],
            [ 495, 562]]
 
-QLoRA r8：[[2083, 293],
-           [ 623, 434]]
+3,000 条 QLoRA r8：[[2083, 293],
+                    [ 623, 434]]
 
-QLoRA r16：[[2062, 314],
-            [ 573, 484]]
+3,000 条 QLoRA r16：[[2062, 314],
+                     [ 573, 484]]
+
+30,899 条 QLoRA r16：[[1920, 456],
+                      [ 368, 689]]
 ```
 
 相对 NF4 Base：
 
 - r8 的 Accuracy 提高 10.6612 个百分点，Macro-F1 提高 6.3291 个百分点；
-- r16 的 Accuracy 提高 11.5060 个百分点，Macro-F1 提高 8.2550 个百分点；
-- 两个 Adapter 都显著减少了假阳性，并提高了总体准确率和类别均衡指标。
+- 3,000 条 r16 的 Accuracy 提高 11.5060 个百分点，Macro-F1 提高 8.2550 个百分点；
+- 30,899 条 r16 的 Accuracy 提高 13.3411 个百分点，Macro-F1 提高 13.4700 个百分点。
 
 在相同训练数据和主要超参数下，r16 相对 r8：
 
@@ -328,23 +366,35 @@ QLoRA r16：[[2062, 314],
 - 正类 Recall 提高 4.7304 个百分点；
 - 正类 F1 提高 3.5286 个百分点。
 
-因此，在本次 3,000 条训练实验中，r16/a32 是两个 QLoRA 配置中表现更好的方案。需要注意：这只是一次固定 seed 的 validation 对比，不能据此断言更大的 rank 在所有设置下都一定更好。
+因此，在 3,000 条训练实验中，r16/a32 是两个 QLoRA 配置中表现更好的方案。需要注意：这只是一次固定 seed 的 validation 对比，不能据此断言更大的 rank 在所有设置下都一定更好。
+
+在 rank、alpha 和其他核心配置相同的条件下，30,899 条 r16 相对 3,000 条 r16：
+
+- Accuracy 提高 1.8352 个百分点；
+- Macro-F1 提高 5.2150 个百分点；
+- 正类 Recall 提高 19.3945 个百分点；
+- 正类 F1 提高 10.3962 个百分点。
+
+全量训练提高了总体准确率和类别均衡表现，尤其明显改善了正类召回率；对应代价是假阳性数量有所增加，正类 Precision 略降 0.4769 个百分点。
 
 ## 8. 训练过程记录
 
-| 项目 | r8/a16 | r16/a32 |
-|---|---:|---:|
-| 训练状态 | complete | complete |
-| 训练 step | 750 | 750 |
-| 总耗时 | 10,884.70 s（约 3.02 h） | 16,066.66 s（约 4.46 h） |
-| Trainer train runtime | 10,824.54 s | 15,998.86 s |
-| 最终 train loss | 0.271357 | 0.266036 |
-| 100 条 eval loss | 0.239183 | 0.242870 |
-| 最大保留显存 | 3.428 GiB | 3.434 GiB |
-| Adapter 权重大小 | 6,437,272 bytes | 12,859,984 bytes |
-| Adapter 指纹 | `5ab26571...9160c9` | `26f07005...93cb9` |
+| 项目 | 3,000 条 r8/a16 | 3,000 条 r16/a32 | 30,899 条 r16/a32 |
+|---|---:|---:|---:|
+| 训练状态 | complete | complete | complete |
+| 训练 step | 750 | 750 | 7,726 |
+| 总耗时 | 10,884.70 s（约 3.02 h） | 16,066.66 s（约 4.46 h） | 约 18 h 29 min |
+| 可横向比较的 train loss | 0.271357 | 0.266036 | — |
+| 100 条 eval loss | 0.239183 | 0.242870 | 0.232580 |
+| 最大保留显存 | 3.428 GiB | 3.434 GiB | 3.445 GiB |
+| Adapter 权重大小 | 6,437,272 bytes | 12,859,984 bytes | 12,859,984 bytes |
+| Adapter 指纹 | `5ab26571...9160c9` | `26f07005...93cb9` | `d819cad2...4d74ec` |
 
 r8 首次正式输出目录只留下了 `status=running` 的不完整配置，未产生最终 Adapter；随后使用全新目录 `qlora_r8_a16_retry1` 从原始基础模型重新完成训练。仓库只保留这次成功运行，不把不完整目录当作实验结果。
+
+30,899 条训练的总耗时按实际运行区间累计，已扣除可确认的停机间隔；训练过程支持从 checkpoint 恢复。
+
+全量训练日志中的 `train_loss=0.006497` 采用不同的记录口径，因此不放入 train loss 横向比较；模型效果以统一的 100 条 eval loss 和 3,433 条完整 validation 指标为准。
 
 记录的推理延迟只覆盖同步后的 GPU `model.generate`，不含模型加载、tokenization、decode 和日志写入；它适合检查同一次运行，不应视为严格硬件性能基准。
 
@@ -354,14 +404,13 @@ r8 首次正式输出目录只留下了 `status=running` 的不完整配置，�
 
 对齐后的 NF4 Zero-shot Base Accuracy 降为 62.66%，但已经能够识别正类：Macro-F1 提升到 58.99%，正类 Recall 提升到 53.17%。因此本项目同时报告 Accuracy、Macro-F1 和正类指标，不用 Accuracy 单独判断模型质量。
 
-本版训练与推理均使用新的正式提示词，不能把旧 P0 Adapter 与本版结果混在同一受控对比中。
+本版训练与推理均使用新的正式提示词，不把旧 P0 Adapter 与本版结果混在同一受控对比中。
 
 ## 10. 实验边界与后续工作
 
 - 本文全部模型选择和比较都基于 `validation.jsonl`，没有使用 `evaluation.jsonl` 调参；
-- 3,000 条 r8/r16 都只运行一个 seed，尚未给出多随机种子均值和方差；
+- 三组 QLoRA 都只运行一个 seed，尚未给出多随机种子均值和方差；
 - Few-shot 提示工程方案尚需放入同一 NF4 推理框架，才能与 QLoRA 做“只改提示 vs. 参数微调”的公平比较；
-- 30,899 条 rank=16 属于下一阶段，将单独上传训练产物、结果并再次更新 README；
 - 在训练方案完全冻结前，不使用保留的 evaluation 划分反复选择参数。
 
-本次提交公开保留代码、固定配置、Adapter、逐条预测和指标文件，便于任何读者复现并核查“对齐 NF4 基准 → 3,000 条双秩 QLoRA → 同协议 validation 对比”的完整过程。
+当前版本公开保留代码、固定配置、Adapter、逐条预测和指标文件，便于复现并核查“对齐 NF4 基准 → 3,000 条双秩 QLoRA → 30,899 条 r16 全量训练 → 同协议 validation 对比”的完整过程。

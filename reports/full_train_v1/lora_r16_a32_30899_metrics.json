@@ -1,0 +1,58 @@
+{
+  "method": "lora_r16_a32_30899",
+  "total": 3433,
+  "label_counts": {
+    "0": 2376,
+    "1": 1057
+  },
+  "prediction_counts": {
+    "0": 2288,
+    "1": 1145,
+    "invalid": 0
+  },
+  "invalid_count": 0,
+  "invalid_rate": 0.0,
+  "invalid_policy": "prediction=null is retained and counted as incorrect",
+  "accuracy_including_invalid_as_wrong": 0.7599766967666763,
+  "precision_macro_including_invalid_as_wrong": 0.7204537820258344,
+  "recall_macro_including_invalid_as_wrong": 0.729962825989316,
+  "f1_macro_including_invalid_as_wrong": 0.724561173921104,
+  "per_class": {
+    "0": {
+      "precision": 0.8391608391608392,
+      "recall": 0.8080808080808081,
+      "f1": 0.823327615780446
+    },
+    "1": {
+      "precision": 0.6017467248908297,
+      "recall": 0.651844843897824,
+      "f1": 0.6257947320617621
+    }
+  },
+  "confusion_matrix_valid_0_1": [
+    [
+      1920,
+      456
+    ],
+    [
+      368,
+      689
+    ]
+  ],
+  "confusion_matrix_with_invalid": {
+    "0": {
+      "0": 1920,
+      "1": 456,
+      "invalid": 0
+    },
+    "1": {
+      "0": 368,
+      "1": 689,
+      "invalid": 0
+    }
+  },
+  "latency_count": 3433,
+  "mean_latency_ms": 290.20918584328575,
+  "median_latency_ms": 181.924,
+  "p95_latency_ms": 1119.5683999999999
+}
