@@ -15,9 +15,9 @@ __pycache__/
 /results/b_aligned_v1/diagnostics/
 /results/b_aligned_v1/smoke/
 /results/b_aligned_v1/validation/failed_*/
-/results/full_train_v1/
+/results/full_train_v1/smoke/
 /reports/b_aligned_v1/smoke/
-/reports/full_train_v1/
+/reports/full_train_v1/smoke/
 /data/afqmc_shared/
 /data/derived/
 *.log

@@ -1,14 +1,15 @@
 # Qwen3-1.7B AFQMC 语义匹配：统一基准与 QLoRA 对比
 
-本项目记录在统一协议下完成的 Qwen3-1.7B 中文语义匹配实验。本版在上一版 P0 探索性实验的基础上，对齐了正式 Zero-shot 提示词、消息结构、生成参数、解析规则、模型版本和验证集，然后完成：
+本项目记录在统一协议下完成的 Qwen3-1.7B 中文语义匹配实验。实验对齐了正式 Zero-shot 提示词、消息结构、生成参数、解析规则、模型版本和数据划分，并完成：
 
 - Qwen3-1.7B 4-bit NF4 Zero-shot 基准；
 - 3,000 条 AFQMC 数据的 QLoRA rank=8 / alpha=16 训练；
 - 3,000 条 AFQMC 数据的 QLoRA rank=16 / alpha=32 训练；
 - 30,899 条 AFQMC 数据的 QLoRA rank=16 / alpha=32 全量训练；
-- 四个模型在同一份 3,433 条 validation 上的完整逐条预测和评估。
+- 四个模型在同一份 3,433 条 validation 上的完整逐条预测和评估；
+- 最终选定模型在 4,316 条保留 evaluation 上的一次性最终评估。
 
-> **当前公开范围：** 包含协议对齐后的 NF4 Base、3,000 条 r8、3,000 条 r16，以及 30,899 条 r16 实验。仓库保留复现所需代码、配置、最终 Adapter、训练日志、逐条预测和评估指标；基础模型、可恢复 checkpoint 和 smoke 产物不纳入版本控制。
+> **当前公开范围：** 包含协议对齐后的 NF4 Base、3,000 条 r8、3,000 条 r16、30,899 条 r16 实验，以及最终模型的保留集评估。仓库保留复现所需代码、配置、最终 Adapter、训练日志、逐条预测和评估指标；基础模型、可恢复 checkpoint、控制台日志和 smoke 产物不纳入版本控制。
 
 ## 1. 任务与统一协议
 
@@ -93,9 +94,11 @@ Zero-shot 基准只加载基础模型，不加载 Adapter；这里的 Zero-shot 
 │   ├── lora_r8_a16.*              # r8 完整 validation 结果
 │   └── lora_r16_a32.*             # r16 完整 validation 结果
 ├── results/full_train_v1/validation/
-│   └── lora_r16_a32_30899.*        # 全量训练 r16 完整 validation 结果
+│   └── lora_r16_a32_30899.*       # 全量训练 r16 完整 validation 结果
+├── results/full_train_v1/evaluation/
+│   └── lora_r16_a32_30899.*       # 最终模型完整 evaluation 结果
 ├── reports/b_aligned_v1/           # Base 与 3,000 条实验指标
-└── reports/full_train_v1/          # 30,899 条 r16 实验指标
+└── reports/full_train_v1/          # 最终模型 validation 与 evaluation 指标
 ```
 
 `models/` 不进入仓库，复现时按固定版本下载。可恢复 checkpoint、失败运行、诊断运行和可快速重跑的 smoke 产物不进入版本控制。
@@ -157,7 +160,7 @@ python .\src\download_model.py `
 |---|---:|---:|---:|---|
 | `data/afqmc_shared/train.jsonl` | 30,899 | 21,383 | 9,516 | 全量 r16 训练集，也是 3,000 条子集的来源 |
 | `data/afqmc_shared/validation.jsonl` | 3,433 | 2,376 | 1,057 | Base 和三组 QLoRA 的共同完整验证集 |
-| `data/afqmc_shared/evaluation.jsonl` | 4,316 | 2,978 | 1,338 | 保留的最终评估集；本次没有使用 |
+| `data/afqmc_shared/evaluation.jsonl` | 4,316 | 2,978 | 1,338 | 冻结方案后仅使用一次的最终评估集 |
 | `data/afqmc_pilot/train_3000.jsonl` | 3,000 | 2,077 | 923 | r8 与 r16 的共同训练集 |
 | `data/afqmc_pilot/validation_100.jsonl` | 100 | 69 | 31 | 训练结束后的 loss 检查 |
 
@@ -168,6 +171,7 @@ train.jsonl          f001da4af1a6f651ebc3ce4c01c135ddfdcd8b9cef246fe6695f74d627f
 train_3000.jsonl     39299587180176c0b2550dc173314e6311556f15bafdd0f79f50082764e638bb
 validation_100.jsonl 22475d9480f616ad9e58ef1096434f7abaaf9947f5b7367406ad1df3e195232c
 validation.jsonl     4fcdbfcc3dd252e7f385e6535510df0fbe8f488e0cf0d7681d380049a6b6b8f5
+evaluation.jsonl     adb30d8dc949b1605501c577b3d5c9d8a8aa199c3004fd72052c210b83240838
 ```
 
 数据检查命令：
@@ -326,6 +330,24 @@ python .\src\evaluate.py `
 - `*.calls.jsonl`：提示文本、原始输出、token 数、结束原因和生成设置；
 - `*.summary.json`：模型/Adapter 指纹、输入哈希、运行状态、总体正确数和延迟统计。
 
+### 6.6 最终 evaluation 预测与评估
+
+在模型、提示词、解析规则和生成参数全部冻结后，只对选定的 30,899 条 r16/a32 模型执行一次保留集评估：
+
+```powershell
+python .\src\predict_lora.py `
+  --model .\models\qwen3-1.7b `
+  --adapter .\outputs\full_train_v1\qlora_r16_a32_30899\adapter `
+  --input .\data\afqmc_shared\evaluation.jsonl `
+  --max-samples 0 `
+  --output .\results\full_train_v1\evaluation\lora_r16_a32_30899.jsonl `
+  --method lora_r16_a32_30899_final
+
+python .\src\evaluate.py `
+  .\results\full_train_v1\evaluation\lora_r16_a32_30899.jsonl `
+  --output .\reports\full_train_v1\lora_r16_a32_30899_evaluation_metrics.json
+```
+
 ## 7. 完整 validation 结果
 
 所有结果均来自同一份 3,433 条 validation；无效输出均为 0。
@@ -377,7 +399,26 @@ NF4 Base：[[1589, 787],
 
 全量训练提高了总体准确率和类别均衡表现，尤其明显改善了正类召回率；对应代价是假阳性数量有所增加，正类 Precision 略降 0.4769 个百分点。
 
-## 8. 训练过程记录
+## 8. 最终 evaluation 结果
+
+最终模型在 4,316 条 evaluation 上完成全部预测，无效输出为 0。该数据在训练和模型选择阶段均未使用。
+
+| 模型 | Accuracy | Macro-Precision | Macro-Recall | Macro-F1 | P(1) | R(1) | F1(1) | 无效输出率 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 30,899 条 QLoRA r16/a32 | **76.3902%** | **72.5861%** | **73.5481%** | **73.0018%** | **61.0076%** | **66.0688%** | **63.4374%** | **0.0000%** |
+
+混淆矩阵为：
+
+```text
+[[2413, 565],
+ [ 454, 884]]
+```
+
+其中 evaluation 的负类占比为 68.9991%；全预测为 0 时 Accuracy 仅为 68.9991%。最终模型在 Accuracy 达到 76.3902% 的同时，正类 F1 达到 63.4374%，说明结果并非来自多数类偏置。
+
+与 validation 相比，evaluation 的 Accuracy 提高 0.3925 个百分点，Macro-F1 提高 0.5457 个百分点，正类 F1 提高 0.8579 个百分点。两份独立数据上的指标接近，未观察到明显的泛化性能下降。
+
+## 9. 训练过程记录
 
 | 项目 | 3,000 条 r8/a16 | 3,000 条 r16/a32 | 30,899 条 r16/a32 |
 |---|---:|---:|---:|
@@ -398,19 +439,10 @@ r8 首次正式输出目录只留下了 `status=running` 的不完整配置，�
 
 记录的推理延迟只覆盖同步后的 GPU `model.generate`，不含模型加载、tokenization、decode 和日志写入；它适合检查同一次运行，不应视为严格硬件性能基准。
 
-## 9. 与旧 P0 结果的关系
+## 10. 实验结论与边界
 
-上一版 P0 Base 在 validation 上的 Accuracy 为 69.21%，但它把 3,433 条样本全部预测成 0，Macro-F1 只有 40.90%，正类 Recall 和 F1 都为 0。69.21% 恰好等于验证集负类占比，属于类别不均衡下的多数类假高分。
+在统一 NF4 推理协议下，3,000 条 rank 消融中 r16/a32 优于 r8/a16，因此选定 r16/a32 在完整 30,899 条训练集上训练。全量训练模型在 validation 上取得 75.9977% Accuracy 和 72.4561% Macro-F1，在最终 evaluation 上取得 76.3902% Accuracy 和 73.0018% Macro-F1，且两次评估均无无效输出。
 
-对齐后的 NF4 Zero-shot Base Accuracy 降为 62.66%，但已经能够识别正类：Macro-F1 提升到 58.99%，正类 Recall 提升到 53.17%。因此本项目同时报告 Accuracy、Macro-F1 和正类指标，不用 Accuracy 单独判断模型质量。
+模型选择只基于 `validation.jsonl`；`evaluation.jsonl` 在方案冻结后仅用于一次最终评估，未用于调参或 checkpoint 选择。三组 QLoRA 实验均为单一随机种子结果，因此结论限定于本仓库记录的固定数据划分、模型版本、随机种子与训练协议。
 
-本版训练与推理均使用新的正式提示词，不把旧 P0 Adapter 与本版结果混在同一受控对比中。
-
-## 10. 实验边界与后续工作
-
-- 本文全部模型选择和比较都基于 `validation.jsonl`，没有使用 `evaluation.jsonl` 调参；
-- 三组 QLoRA 都只运行一个 seed，尚未给出多随机种子均值和方差；
-- Few-shot 提示工程方案尚需放入同一 NF4 推理框架，才能与 QLoRA 做“只改提示 vs. 参数微调”的公平比较；
-- 在训练方案完全冻结前，不使用保留的 evaluation 划分反复选择参数。
-
-当前版本公开保留代码、固定配置、Adapter、逐条预测和指标文件，便于复现并核查“对齐 NF4 基准 → 3,000 条双秩 QLoRA → 30,899 条 r16 全量训练 → 同协议 validation 对比”的完整过程。
+仓库公开保留固定代码与配置、最终 Adapter、训练记录、逐条预测、调用记录、运行摘要和指标文件，用于复现并核查“统一 NF4 基准 → 3,000 条双秩 QLoRA → 30,899 条 r16 全量训练 → validation 选择 → evaluation 最终验证”的完整实验链路。
