@@ -4,9 +4,13 @@
 
 ## Python 调用
 
-在项目根目录使用 `.venv\Scripts\python.exe` 运行自己的脚本：
+在项目根目录使用 `.venv\Scripts\python.exe` 运行自己的脚本；源文件位于 `src/`：
 
 ```python
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path("src").resolve()))
 from llm_client import LLMClient
 
 client = LLMClient(log_path="outputs/my_calls.jsonl")
@@ -38,14 +42,44 @@ response = client.generate(
 ## 命令行试用
 
 ```powershell
-cd D:\nlp
-.\.venv\Scripts\python.exe llm_client.py
-.\.venv\Scripts\python.exe llm_client.py --thinking
+cd <repository>
+.\.venv\Scripts\python.exe src\llm_client.py
+.\.venv\Scripts\python.exe src\llm_client.py --thinking
 ```
 
 可使用 `--prompt`、`--system-prompt`、`--model-path`、`--max-new-tokens`、`--seed` 和 `--log` 指定参数。命令行默认先预热，再调用一次模型；日志追加到 `outputs/llm_client_calls.jsonl`。
 
-## 返回结果
+## 可选 NF4 推理
+
+默认仍为 BF16（不支持时 FP16）未量化。安装 `requirements.txt` 后，可在 Python 中使用 `LLMClient(quantization="nf4", ...)`，或在命令行添加 `--quantization nf4`。
+
+NF4 使用 bitsandbytes 4-bit、double quantization 和 BF16 计算（不支持时 FP16），固定在当前 CUDA 显卡，不加载 LoRA Adapter，也不训练模型。模型权重从相同本地文件读取，加载时在内存中量化，不修改模型文件。summary 和调用日志中的 `model_info.quantization` 会记录量化参数、依赖版本和实际转换的 Linear4bit 模块数；`dtype` 表示计算精度，不代表权重仍为 BF16。
+
+以最初版提示词运行完整验证集，单独保存量化结果：
+
+```powershell
+.\.venv\Scripts\python.exe src\zero_shot.py --quantization nf4 --prompt-file results\P0.prompt.txt --input data\AFQMC_全组统一数据包\data\processed\validation.jsonl --limit 0 --output outputs\P0.validation.nf4.jsonl
+```
+
+此命令沿用 Zero-shot 的无 system prompt、非思考模式及原有生成和标签解析规则。预测文件仍为七字段，`method` 为 `zero_shot`；量化方式通过文件名及 summary 区分。NF4 与 BF16 的效果可能不同，实验比较时应记录量化方式。
+
+## 对话形式的Few-shot示范
+
+`generate`可选接收`demonstrations`列表，每项包含非空`user`文本和字符串`assistant`标签（`"0"`或`"1"`）。消息顺序为可选system、逐组user/assistant示范、当前user问题。完整消息保存在调用日志中。不传该参数时，原有单轮请求路径保持不变。
+
+```python
+response = client.generate(
+    prompt="判断下面句对，仅输出0或1。\n句子1：……\n句子2：……",
+    demonstrations=[
+        {"user": "判断下面训练句对，仅输出0或1。\n句子1：……\n句子2：……", "assistant": "1"},
+    ],
+    enable_thinking=False,
+)
+```
+
+实验配置中的`demonstrations`会由`predict_nf4_selected.py`转交给客户端。复现这类方案需要完整配置，而不只是最后一个user提示词。示范标签仍须来自训练集，最终预测沿用严格解析。
+
+## 返回字段
 
 | 字段 | 含义 |
 |---|---|

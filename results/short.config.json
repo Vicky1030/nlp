@@ -1,0 +1,14 @@
+{
+  "prompt_template": "判断两个句子的意思是否相同。意思相同输出1，意思不同输出0。\n句子1：{sentence1}\n句子2：{sentence2}\n只输出0或1，不要解释。",
+  "system_prompt": null,
+  "method": "zero_shot",
+  "candidate_name": "short",
+  "quantization": "nf4",
+  "enable_thinking": false,
+  "max_new_tokens": 8,
+  "do_sample": false,
+  "seed": 42,
+  "model_fingerprint": "a9d6d3c0e389377afced62546d63c8c64fb4b26e9495b11de8f1662afb735c5c",
+  "source_manifest": "results/manifest.json",
+  "selection_rule": "harmonic mean of accuracy and macro_f1; tie-break positive F1"
+}

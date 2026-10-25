@@ -1,0 +1,32 @@
+{
+  "candidate_name": "fixed2_last_exact",
+  "prompt_template": "参考示例：\n句子1：如何增加？蚂蚁借呗额度\n句子2：蚂蚁借呗要怎么样才能提升额度\n答案：1\n\n句子1：花呗自动还款什么时候扣除\n句子2：花呗自动还款在哪里扣\n答案：0\n\n判断两个句子的核心意思是否相同。核心意思相同输出1，意思不同输出0。\n句子1：{sentence1}\n句子2：{sentence2}\n只输出0或1，不要解释。",
+  "system_prompt": null,
+  "method": "few_shot",
+  "demonstrations": null,
+  "training_example_ids": [
+    118,
+    18614
+  ],
+  "quantization": "nf4",
+  "enable_thinking": false,
+  "max_new_tokens": 8,
+  "do_sample": false,
+  "seed": 42,
+  "model_fingerprint": "a9d6d3c0e389377afced62546d63c8c64fb4b26e9495b11de8f1662afb735c5c",
+  "training_examples": [
+    {
+      "id": 118,
+      "sentence1": "如何增加？蚂蚁借呗额度",
+      "sentence2": "蚂蚁借呗要怎么样才能提升额度",
+      "label": 1
+    },
+    {
+      "id": 18614,
+      "sentence1": "花呗自动还款什么时候扣除",
+      "sentence2": "花呗自动还款在哪里扣",
+      "label": 0
+    }
+  ],
+  "prompt_sha256": "e6bb59db4c76235848743fffec9bc5edc538bd43aa2eac6a4f4b2819cdecaec8"
+}

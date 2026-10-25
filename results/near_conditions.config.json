@@ -1,0 +1,15 @@
+{
+  "candidate_name": "near_conditions",
+  "prompt_template": "判断两个句子的核心意思是否相同或相近。核心意思相同或相近输出1，意思不同输出0。\n同一个意思的不同说法应判为1。\n如果否定或条件差异改变了原意，则判为0。\n句子1：{sentence1}\n句子2：{sentence2}\n只输出0或1，不要解释。",
+  "system_prompt": null,
+  "method": "zero_shot",
+  "demonstrations": null,
+  "training_example_ids": [],
+  "quantization": "nf4",
+  "enable_thinking": false,
+  "max_new_tokens": 8,
+  "do_sample": false,
+  "seed": 42,
+  "model_fingerprint": "a9d6d3c0e389377afced62546d63c8c64fb4b26e9495b11de8f1662afb735c5c",
+  "prompt_sha256": "01a1e8289d08294d9e6e4218efb59e1dd3c29ba2f253bddddc6773c351bfaf28"
+}

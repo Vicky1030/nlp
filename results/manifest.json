@@ -1,0 +1,78 @@
+{
+  "frozen_utc": "2026-10-25T08:53:04.119680+00:00",
+  "configs": {
+    "P0": {
+      "candidate_name": "P0",
+      "prompt_template": "请判断下面两个中文句子是否表达相同或相近的核心意思。\n\n判断规则：\n- 核心意思相同或相近，输出1。\n- 核心意思不同，输出0。\n- 不要仅根据共同关键词判断，要关注意图、否定和条件的差别。\n\n句子1：{sentence1}\n句子2：{sentence2}\n\n只输出0或1，不要解释。\n",
+      "system_prompt": null,
+      "method": "zero_shot",
+      "demonstrations": null,
+      "training_example_ids": [],
+      "quantization": "nf4",
+      "enable_thinking": false,
+      "max_new_tokens": 8,
+      "do_sample": false,
+      "seed": 42,
+      "model_fingerprint": "a9d6d3c0e389377afced62546d63c8c64fb4b26e9495b11de8f1662afb735c5c",
+      "prompt_sha256": "bd1ab4b528a42f9acd467858088be6059505e536c367d7e65592a6702c0f91e0"
+    },
+    "near_conditions": {
+      "candidate_name": "near_conditions",
+      "prompt_template": "判断两个句子的核心意思是否相同或相近。核心意思相同或相近输出1，意思不同输出0。\n同一个意思的不同说法应判为1。\n如果否定或条件差异改变了原意，则判为0。\n句子1：{sentence1}\n句子2：{sentence2}\n只输出0或1，不要解释。",
+      "system_prompt": null,
+      "method": "zero_shot",
+      "demonstrations": null,
+      "training_example_ids": [],
+      "quantization": "nf4",
+      "enable_thinking": false,
+      "max_new_tokens": 8,
+      "do_sample": false,
+      "seed": 42,
+      "model_fingerprint": "a9d6d3c0e389377afced62546d63c8c64fb4b26e9495b11de8f1662afb735c5c",
+      "prompt_sha256": "01a1e8289d08294d9e6e4218efb59e1dd3c29ba2f253bddddc6773c351bfaf28"
+    },
+    "fixed2_last_exact": {
+      "candidate_name": "fixed2_last_exact",
+      "prompt_template": "参考示例：\n句子1：如何增加？蚂蚁借呗额度\n句子2：蚂蚁借呗要怎么样才能提升额度\n答案：1\n\n句子1：花呗自动还款什么时候扣除\n句子2：花呗自动还款在哪里扣\n答案：0\n\n判断两个句子的核心意思是否相同。核心意思相同输出1，意思不同输出0。\n句子1：{sentence1}\n句子2：{sentence2}\n只输出0或1，不要解释。",
+      "system_prompt": null,
+      "method": "few_shot",
+      "demonstrations": null,
+      "training_example_ids": [
+        118,
+        18614
+      ],
+      "quantization": "nf4",
+      "enable_thinking": false,
+      "max_new_tokens": 8,
+      "do_sample": false,
+      "seed": 42,
+      "model_fingerprint": "a9d6d3c0e389377afced62546d63c8c64fb4b26e9495b11de8f1662afb735c5c",
+      "training_examples": [
+        {
+          "id": 118,
+          "sentence1": "如何增加？蚂蚁借呗额度",
+          "sentence2": "蚂蚁借呗要怎么样才能提升额度",
+          "label": 1
+        },
+        {
+          "id": 18614,
+          "sentence1": "花呗自动还款什么时候扣除",
+          "sentence2": "花呗自动还款在哪里扣",
+          "label": 0
+        }
+      ],
+      "prompt_sha256": "e6bb59db4c76235848743fffec9bc5edc538bd43aa2eac6a4f4b2819cdecaec8"
+    }
+  },
+  "selection": "User fixed near_conditions and fixed2_last_exact using validation. P0 is unchanged baseline. No tuning on evaluation.",
+  "config_sha256": {
+    "P0": "b33da2395b8df7aab2d01d0747a322cb7e3fa28748dbb0bf8515a8abd9d59ce3",
+    "near_conditions": "ca24a382020eb6d6fda3cdbf8cc8ff111c890531842f5b09b11c4a399e38c510",
+    "fixed2_last_exact": "5e93c60538154c351864dda40357ef9a0191e2dfc6f00b9c3afccb915044380c"
+  },
+  "data_sha256": {
+    "train": "f001da4af1a6f651ebc3ce4c01c135ddfdcd8b9cef246fe6695f74d627f3aad2",
+    "validation": "4fcdbfcc3dd252e7f385e6535510df0fbe8f488e0cf0d7681d380049a6b6b8f5",
+    "evaluation": "adb30d8dc949b1605501c577b3d5c9d8a8aa199c3004fd72052c210b83240838"
+  }
+}

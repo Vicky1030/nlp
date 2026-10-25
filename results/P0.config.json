@@ -1,0 +1,15 @@
+{
+  "candidate_name": "P0",
+  "prompt_template": "请判断下面两个中文句子是否表达相同或相近的核心意思。\n\n判断规则：\n- 核心意思相同或相近，输出1。\n- 核心意思不同，输出0。\n- 不要仅根据共同关键词判断，要关注意图、否定和条件的差别。\n\n句子1：{sentence1}\n句子2：{sentence2}\n\n只输出0或1，不要解释。\n",
+  "system_prompt": null,
+  "method": "zero_shot",
+  "demonstrations": null,
+  "training_example_ids": [],
+  "quantization": "nf4",
+  "enable_thinking": false,
+  "max_new_tokens": 8,
+  "do_sample": false,
+  "seed": 42,
+  "model_fingerprint": "a9d6d3c0e389377afced62546d63c8c64fb4b26e9495b11de8f1662afb735c5c",
+  "prompt_sha256": "bd1ab4b528a42f9acd467858088be6059505e536c367d7e65592a6702c0f91e0"
+}

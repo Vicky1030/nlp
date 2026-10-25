@@ -1,0 +1,55 @@
+{
+  "status": "complete",
+  "split": "evaluation",
+  "config": {
+    "candidate_name": "near_conditions",
+    "prompt_template": "判断两个句子的核心意思是否相同或相近。核心意思相同或相近输出1，意思不同输出0。\n同一个意思的不同说法应判为1。\n如果否定或条件差异改变了原意，则判为0。\n句子1：{sentence1}\n句子2：{sentence2}\n只输出0或1，不要解释。",
+    "system_prompt": null,
+    "method": "zero_shot",
+    "demonstrations": null,
+    "training_example_ids": [],
+    "quantization": "nf4",
+    "enable_thinking": false,
+    "max_new_tokens": 8,
+    "do_sample": false,
+    "seed": 42,
+    "model_fingerprint": "a9d6d3c0e389377afced62546d63c8c64fb4b26e9495b11de8f1662afb735c5c",
+    "prompt_sha256": "01a1e8289d08294d9e6e4218efb59e1dd3c29ba2f253bddddc6773c351bfaf28"
+  },
+  "input_sha256": "adb30d8dc949b1605501c577b3d5c9d8a8aa199c3004fd72052c210b83240838",
+  "metrics": {
+    "total": 4316,
+    "correct": 2895,
+    "accuracy": 0.6707599629286376,
+    "invalid_count": 0,
+    "invalid_rate": 0.0,
+    "confusion_matrix_valid_0_1": [
+      [
+        2343,
+        635
+      ],
+      [
+        786,
+        552
+      ]
+    ],
+    "per_class": {
+      "0": {
+        "precision": 0.7488015340364333,
+        "recall": 0.7867696440564137,
+        "f1": 0.7673161945308661,
+        "support": 2978
+      },
+      "1": {
+        "precision": 0.4650379106992418,
+        "recall": 0.4125560538116592,
+        "f1": 0.4372277227722773,
+        "support": 1338
+      }
+    },
+    "macro_f1": 0.6022719586515717,
+    "positive_predictions": 1187,
+    "mean_generation_latency_ms": 120.93579532000341
+  },
+  "prediction_sha256": "2f342bfb7ece323d0c890b708ceaf96d4f26e800b40b8160b7ce403c21b635f0"
+}
