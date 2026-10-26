@@ -1,68 +1,59 @@
-"""读取 run_all 生成的 comparison_results.csv，绘制指标对比图。"""
-import argparse
+"""Create metric comparison and confusion-matrix plots."""
 import csv
 from pathlib import Path
 
 
-def visualize(metrics_csv, output_dir):
+def visualize(metrics_csv, output_dir, split_name):
     try:
+        import matplotlib
+        matplotlib.use("Agg")
         import matplotlib.pyplot as plt
-    except ImportError as exc:
-        raise RuntimeError("绘图需要 matplotlib，请运行：pip install matplotlib") from exc
-
+    except ImportError:
+        return ["SKIPPED: matplotlib not installed"]
     metrics_csv, output_dir = Path(metrics_csv), Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     with metrics_csv.open("r", encoding="utf-8-sig", newline="") as f:
         rows = list(csv.DictReader(f))
     if not rows:
-        raise ValueError(f"{metrics_csv} 中没有指标记录")
+        return ["SKIPPED: no model rows"]
     models = [r["model"] for r in rows]
-    metric_specs = [
-        ("accuracy", "Accuracy", "accuracy_comparison.png"),
-        ("macro_f1", "Macro-F1", "macro_f1_comparison.png"),
-        ("f1_positive", "F1 (positive label=1)", "positive_f1_comparison.png"),
-    ]
-    for key, title, filename in metric_specs:
-        values = [float(r[key]) for r in rows]
-        fig, ax = plt.subplots(figsize=(max(7, len(models) * 1.2), 4.5))
-        bars = ax.bar(models, values)
-        ax.set_title(title)
-        ax.set_ylabel("Score")
+    generated = []
+    for key, title, filename in [
+        ("accuracy", "Accuracy", "accuracy"),
+        ("macro_f1", "Macro-F1", "macro_f1"),
+        ("f1_positive", "Positive-class F1 (label=1)", "positive_f1"),
+    ]:
+        vals = [float(r[key]) for r in rows]
+        fig, ax = plt.subplots(figsize=(max(7, len(models)*1.15), 4.6))
+        bars = ax.bar(models, vals)
+        ax.set_title(f"{title} — {split_name}")
         ax.set_ylim(0, 1)
+        ax.set_ylabel("Score")
         ax.tick_params(axis="x", labelrotation=25)
-        for bar, value in zip(bars, values):
-            ax.text(bar.get_x() + bar.get_width()/2, value + 0.01, f"{value:.3f}",
+        for bar, val in zip(bars, vals):
+            ax.text(bar.get_x()+bar.get_width()/2, min(0.99, val+0.012), f"{val:.3f}",
                     ha="center", va="bottom", fontsize=8)
         fig.tight_layout()
-        fig.savefig(output_dir / filename, dpi=200)
+        p = output_dir / f"{split_name}_{filename}.png"
+        fig.savefig(p, dpi=180)
         plt.close(fig)
+        generated.append(p.name)
 
-    # 延迟图只展示具备延迟数据的模型
-    latency_rows = [(r["model"], r.get("latency_mean_ms", "")) for r in rows if r.get("latency_mean_ms", "").strip()]
+    latency_rows = [r for r in rows if r.get("latency_mean_ms", "").strip()]
     if latency_rows:
-        fig, ax = plt.subplots(figsize=(max(7, len(latency_rows) * 1.2), 4.5))
-        models_l = [x[0] for x in latency_rows]
-        values_l = [float(x[1]) for x in latency_rows]
-        bars = ax.bar(models_l, values_l)
-        ax.set_title("Mean inference latency")
+        models_l = [r["model"] for r in latency_rows]
+        vals = [float(r["latency_mean_ms"]) for r in latency_rows]
+        fig, ax = plt.subplots(figsize=(max(7, len(models_l)*1.15), 4.6))
+        bars = ax.bar(models_l, vals)
+        ax.set_title(f"Mean recorded latency — {split_name} (not necessarily comparable)")
         ax.set_ylabel("Milliseconds per pair")
         ax.tick_params(axis="x", labelrotation=25)
-        for bar, value in zip(bars, values_l):
-            ax.text(bar.get_x() + bar.get_width()/2, value, f"{value:.3f}",
+        for bar, val in zip(bars, vals):
+            ax.text(bar.get_x()+bar.get_width()/2, val, f"{val:.1f}",
                     ha="center", va="bottom", fontsize=8)
         fig.tight_layout()
-        fig.savefig(output_dir / "latency_comparison.png", dpi=200)
+        p = output_dir / f"{split_name}_latency.png"
+        fig.savefig(p, dpi=180)
         plt.close(fig)
-    return sorted(p.name for p in output_dir.glob("*.png"))
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--metrics", default="outputs/comparison_results.csv")
-    parser.add_argument("--output-dir", default="outputs/figures")
-    args = parser.parse_args()
-    print("Generated:", visualize(args.metrics, args.output_dir))
-
-
-if __name__ == "__main__":
-    main()
+        generated.append(p.name)
+    return generated
