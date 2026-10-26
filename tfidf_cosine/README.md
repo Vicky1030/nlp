@@ -1,96 +1,52 @@
 # TF-IDF + Cosine Similarity
 
-This directory contains only the TF-IDF + cosine similarity method. It preserves the three-stage scripts, shared loader and tokenizer/scoring modules, plotting and error-analysis utilities, case-feature extraction, regression checks, stage-one helper document, frozen models/configuration, validation comparison tables, and method figures. No LR code is included.
+This module preserves the core three-stage experiment: fit `char_1`, `char_1_2` and `word_1` TF-IDF vectorizers on internal training text; compare 102 thresholds per representation on validation (306 candidates); freeze the selected configuration; then predict and score evaluation. The protocol remains `char_1_2`, threshold `0.28`, and `similarity >= threshold`.
 
-## Data and preparation
+## External data and environment
 
-The AFQMC source and processed rows are not redistributed here. Their source, version authenticity, and public-sharing authorization are unconfirmed in the accompanying preparation record. Do not infer a data license from this code or publish sentence-level predictions, error lists, case evidence, or reports containing source sentences. Obtain the data through the course's authorized channel and follow its terms. Keep the existing unified processed files in an external directory; do not split or regenerate them for these commands.
+AFQMC sentence data is not redistributed here. Supply an authorized external directory containing `train.jsonl`, `validation.jsonl` and `evaluation.jsonl`, each with exactly `id`, `sentence1`, `sentence2`, `label`. `tools/check_processed.py` checks the recorded hashes, counts and non-overlapping IDs. A mismatch is a stop condition; do not regenerate or replace the formal split merely to pass the check.
 
-Expected files are `train.jsonl`, `validation.jsonl`, and `evaluation.jsonl`, with exactly `id`, `sentence1`, `sentence2`, and integer `label` fields. `tools/check_processed.py` validates schema, record counts, non-overlapping IDs, and the known SHA-256 hashes before either run. A mismatch is a stop condition, not an invitation to preprocess or split the data again.
-
-## Install and verify data
-
-PowerShell examples below start at the repository root and run from this method directory:
+From the repository root, keep environments, caches and outputs outside the clone:
 
 ```powershell
-Set-Location .\tfidf_cosine
-$Work = 'D:\TFIDF_Cosine_runs\public_01'
-if (Test-Path $Work) { throw 'Choose a new work directory' }
-New-Item -ItemType Directory -Path $Work,"$Work\temp","$Work\pip-cache","$Work\npm-cache","$Work\browsers" | Out-Null
-$env:TEMP = "$Work\temp"
-$env:TMP = "$Work\temp"
-$env:PIP_CACHE_DIR = "$Work\pip-cache"
-$env:MPLCONFIGDIR = "$Work\matplotlib-cache"
-$env:PLAYWRIGHT_BROWSERS_PATH = "$Work\browsers"
+$Module = (Resolve-Path .\tfidf_cosine).Path
+$Data = 'D:\authorized\afqmc\processed'
+$Work = Join-Path 'D:\' ('TFIDF_Cosine_run_' + (Get-Date -Format 'yyyyMMdd_HHmmss_fff'))
+New-Item -ItemType Directory -Path $Work -ErrorAction Stop | Out-Null
+$env:TEMP = Join-Path $Work 'temp'
+$env:TMP = Join-Path $Work 'tmp'
+$env:PIP_CACHE_DIR = Join-Path $Work 'pip-cache'
 $env:PYTHONDONTWRITEBYTECODE = '1'
-python -B -m venv "$Work\venv"
-$Py = "$Work\venv\Scripts\python.exe"
-& $Py -B -m pip install -r .\requirements.txt
-& $Py -B -X utf8 .\tools\check_processed.py --data-dir "D:\authorized\afqmc\processed"
+New-Item -ItemType Directory -Force $env:TEMP,$env:TMP,$env:PIP_CACHE_DIR | Out-Null
+py -3.14 -m venv (Join-Path $Work 'venv')
+$Python = Join-Path $Work 'venv\Scripts\python.exe'
+& $Python -B -m pip install -r (Join-Path $Module 'requirements.txt')
+& $Python -B -X utf8 (Join-Path $Module 'tools\check_processed.py') --data-dir $Data
 ```
 
-No Node.js, Playwright, browser, or model service is required for the Python experiments. These dependencies are optional for re-exporting the supplied ECharts files.
-
-## One-command complete reproduction
-
-After the environment and all three verified external data files are ready, this command fits the three TF-IDF representations on train only, compares the 306 predeclared representation/threshold configurations on validation, freezes the selected model, and then predicts and scores evaluation:
+## Complete experiment
 
 ```powershell
-Set-Location .\tfidf_cosine
-& $Py -B -X utf8 .\run_tfidf_cosine.py --data-dir "D:\authorized\afqmc\processed" --output-root "$Work\full_01"
+& $Python -B -X utf8 (Join-Path $Module 'run_tfidf_cosine.py') `
+  --data-dir $Data `
+  --output-root (Join-Path $Work 'full_run')
 ```
 
-It prints the selected method, representation and threshold, prediction count, metrics, and output paths. Failure stops the pipeline with a nonzero exit. Output directories must be new and are never overwritten. The expected historical check is `tfidf_cosine`, `char_1_2`, threshold `0.28`, 4,316 evaluation rows, Accuracy about `0.603105`, Macro-F1 about `0.557542`, and `[[1994,984],[729,609]]`; these are comparison references, not hard-coded outputs.
+The output root must be new. Stage 1 fits the three vectorizers using only train text; stage 2 performs the fixed 306-candidate validation comparison; stage 3 uses the frozen choice for evaluation and validates the seven-field prediction output. `TFIDF_STAGE1.md` is retained because the unified entry copies it into stage 1 and stage 2 checks it.
 
-## Frozen-model quick verification
+Historical expected results are `char_1_2`, threshold `0.28`, 4,316 evaluation predictions, Accuracy about `0.603105`, Macro-F1 about `0.557542`, and confusion matrix `[[1994,984],[729,609]]`. These are comparison references, not hard-coded evaluation inputs.
 
-After the environment and the existing unified evaluation file are ready, the following loads the committed historical vectorizer and frozen threshold and runs final inference only. It does not refit TF-IDF or search/select thresholds:
+## Frozen inference
+
+The repository includes the historical selected configuration and vectorizer. Supply the authorized external evaluation file and a new output root:
 
 ```powershell
-Set-Location .\tfidf_cosine
-& $Py -B -X utf8 .\src\run_tfidf_stage3.py --config ".\artifacts\tfidf_cosine_full_run_final\stage2\artifacts\tfidf_cosine\selected_config.json" --evaluation "D:\authorized\afqmc\processed\evaluation.jsonl" --output-root "$Work\quick_01"
+& $Python -B -X utf8 (Join-Path $Module 'src\run_tfidf_stage3.py') `
+  --config (Join-Path $Module 'artifacts\tfidf_cosine_full_run_final\stage2\artifacts\tfidf_cosine\selected_config.json') `
+  --evaluation (Join-Path $Data 'evaluation.jsonl') `
+  --output-root (Join-Path $Work 'frozen_inference')
 ```
 
-The final prediction and similarity files include source sentences and labels. Keep them local unless data-sharing permission is confirmed.
+The committed vectorizers and metadata are trusted-input-only `joblib` artifacts. Core aggregate materials retained under `artifacts/` include the three vectorizers, validation similarities, selected configuration, representation summary and full 306-row threshold table. `reports/processed_hashes.json` records formal split integrity; it is not a data license.
 
-## Included and intentionally local-only materials
-
-The committed historical models are ordinary trusted-input-only `joblib` files and should be loaded only from this repository. Included validation comparison CSVs, aggregate score tables, metrics figures, method-flow figures, model metadata, and ECharts resource notices/licenses are selected materials without AFQMC source sentences. The `data/processed/`, `error_analysis/inputs/`, `error_analysis/evidence/`, full stage-three predictions/similarities, error samples and full-run logs from the source delivery remain in the separate complete local backup and are excluded from Git. `TFIDF_STAGE1.md` remains in place because the unified entry and stage checks require it.
-
-Historical model metadata retains the versions, parameters, and hashes needed to understand and load the frozen models. Personal absolute paths to the original Python executable and jieba dictionary were removed from the release copy; neither path is a runtime dependency. Regenerated chart summaries use relative paths.
-
-The original source archive and complete local delivery contain `reports/data_manifest.json`. It is intentionally not published: it records personal absolute input paths and the source package leaves download provenance, official-version authenticity, and license authorization unverified. This is not a missing-file or copy error. The data-preparation source is retained separately from that report. `reports/processed_hashes.json` contains integrity checks only; it does not establish a license or grant access. `reports/release_sha256.json` inventories the files in this repository release; the source archive's `package_sha256.json` is retained only in the full local backup and is not reused as a Git manifest.
-
-The auxiliary `src/inspect_data.py`, `src/prepare_data.py`, and `src/validate_data.py` code is retained for transparency and reuse, but is not part of the default TF-IDF reproduction. These utilities require authorized external raw inputs and/or historical local audit artifacts that are deliberately not included. Run `inspect_data.py` with explicit `--train`, `--dev`, `--test`, and `--output-dir` paths. `prepare_data.py` requires `--audit`, explicit `--train`, `--dev`, `--test`, and a new `--output-root`; it reproduces a documented preparation procedure and must not be used to replace the existing unified processed files for the model commands above. `validate_data.py` is a historical acceptance harness for a complete prepared-data package containing its audit and manifest reports, so it cannot run against this source-only Git release. Its inputs and generated reports may contain source sentences and must remain local unless sharing is authorized. No data-preparation command is implied by the model reproduction instructions.
-
-The ECharts 5.6.0 JavaScript bundle and Noto CJK font are accompanied by their source/identity notes and license texts under `report_materials/echarts_v6/`. No project code license is added because the source package has none.
-
-Candidate-review sources `prepare_tfidf_error_review.py`, `prepare_tfidf_additional_candidates.py`, and `prepare_c_negation_candidates.py` are also retained. They take explicit external evaluation/prediction/similarity/config inputs and an output directory. The latter two additionally require authorized local JSON annotations via `--span-map` (ID to two text spans) and `--curated` (ID to subgroup, two spans, and review note). Embedded source-sentence annotations were removed from the release code, not from the local backup. Use `--help` for their arguments. The historical `provenance/run_closeout_regression.py` requires an external complete delivery **copy** through `--package-root` and a new `--output-root`; its local-only input/evidence reports are not supplied by this Git release. None of these analysis utilities changes the model experiment or is part of the default run.
-
-## Optional analysis and figures
-
-All commands below run from `tfidf_cosine` and use new, unused output directories. Keep the environment, dependencies, caches, logs and generated results on D: outside both the repository and the delivery package. Run the complete command above first to create `$Work/full_01`. Analysis needs `requirements-tfidf-analysis.txt` in addition to the base dependencies. Generated evaluation outputs may contain source sentences.
-
-```powershell
-& $Py -m pip install -r .\requirements-tfidf-analysis.txt
-& $Py -B -X utf8 .\src\analyze_tfidf_errors.py --predictions "$Work\full_01\stage3\results\tfidf_cosine\evaluation_predictions.jsonl" --similarity "$Work\full_01\stage3\results\tfidf_cosine\evaluation_similarity.jsonl" --config "$Work\full_01\stage2\artifacts\tfidf_cosine\selected_config.json" --output-dir "$Work\errors_01"
-& $Py -B -X utf8 .\src\plot_tfidf_results.py --train "D:\authorized\afqmc\processed\train.jsonl" --threshold-table .\artifacts\tfidf_cosine_full_run_final\stage2\results\tfidf_cosine\threshold_comparison.csv --summary .\artifacts\tfidf_cosine_full_run_final\stage2\results\tfidf_cosine\representation_summary.csv --stage3-report "$Work\full_01\stage3\reports\tfidf_cosine_stage3.json" --predictions "$Work\full_01\stage3\results\tfidf_cosine\evaluation_predictions.jsonl" --error-report "$Work\errors_01\error_analysis.json" --output-dir "$Work\plots_01"
-& $Py -B -X utf8 .\src\extract_tfidf_case_evidence.py --evaluation "D:\authorized\afqmc\processed\evaluation.jsonl" --predictions "$Work\full_01\stage3\results\tfidf_cosine\evaluation_predictions.jsonl" --similarity "$Work\full_01\stage3\results\tfidf_cosine\evaluation_similarity.jsonl" --config "$Work\full_01\stage2\artifacts\tfidf_cosine\selected_config.json" --vectorizer "$Work\full_01\stage1\artifacts\tfidf_cosine\char_1_2\vectorizer.joblib" --metadata "$Work\full_01\stage1\artifacts\tfidf_cosine\char_1_2\metadata.json" --output-dir "$Work\case_evidence_01"
-```
-
-To render the supplied flowchart afresh, pass a new external output directory:
-
-```powershell
-& $Py -B .\provenance\render_flowchart_closeout.py --output-dir "$Work\flowchart_01" --font .\report_materials\echarts_v6\ReportCJK.font
-```
-
-PNG export is optional and needs Node, Playwright and Chromium. Install dependencies outside the repository, then explicitly pass their location (use `--browser-path` if supplying an existing authorized Chromium executable):
-
-```powershell
-New-Item -ItemType Directory -Path "$Work\node-deps" | Out-Null
-Copy-Item .\package.json,.\package-lock.json -Destination "$Work\node-deps"
-npm ci --prefix "$Work\node-deps" --cache "$Work\npm-cache"
-node .\report_materials\echarts_v6\export_echarts_png.mjs --html-dir .\report_materials\echarts_v6 --node-deps-dir "$Work\node-deps" --output-dir "$Work\echarts_png_01"
-```
-
-The HTML uses aggregate comparisons. The generator's original sentence-bearing input remains local-only. See [the update provenance](provenance/UPDATE_20261022.md) for the verified delivery identity and public change scope. To verify that external complete delivery, use `& $Py -B .\tools\verify_package.py --package-root "D:\path\to\complete_delivery"`; to verify this public release, use `& $Py -B .\tools\check_release_manifest.py`.
+Plotting, ECharts/Playwright resources, error-case analysis, report generation, release packaging and historical closeout scripts are not part of this streamlined repository version. They remain in the separate local delivery package.

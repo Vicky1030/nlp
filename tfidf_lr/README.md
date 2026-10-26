@@ -1,31 +1,18 @@
 # TF-IDF + Logistic Regression
 
-This directory contains the reproducible source release for the TF-IDF + Logistic Regression method. It does not publish AFQMC sentence data, saved models/vectorizers, prediction or probability rows, error lists, or execution logs. Those resources remain local because the available delivery records do not establish public redistribution permission.
+This module preserves the core LR experiment and does not publish sentence data, trained LR models, probabilities or prediction rows. It starts from three already-fitted TF-IDF vectorizers (`char_1`, `char_1_2`, `word_1`); this repository does not add a TF-IDF fitting stage to the LR pipeline.
 
-## Method and frozen protocol
+Stage 1 trains 18 LR candidates (3 representations x 3 C values x 2 class-weight settings) using sparse pair features `[abs(A-B); A.multiply(B)]`. Stage 2 compares 102 thresholds for every candidate (1,836 rows) with the original six-level selection rule. Stage 3 evaluates only after freezing the configuration. The recorded choice is `char_1_2__C1p0__cw_balanced`, threshold `0.53`, with `probability >= threshold`.
 
-Pair features are sparse CSR matrices `[abs(A-B); A.multiply(B)]`: the absolute difference is first and the elementwise product second, giving `2V` features for a vocabulary of size `V`. The released pipeline starts from three already-fitted TF-IDF vectorizers (`char_1`, `char_1_2`, `word_1`); it does not refit TF-IDF. It trains 18 LR candidates (3 representations x 3 C values x 2 class-weight settings), evaluates 102 thresholds per candidate (1,836 model/threshold comparisons), applies the recorded six-level selection rule, and evaluates only after freezing the selected configuration. Validation is not merged back into training.
+## External resources and environment
 
-The LR training seed is `random_state=42`. This is separate from the seed used by the original data-preparation process. The released code consumes frozen train/validation/evaluation files and does not repartition them.
-
-The historical selected configuration is `char_1_2__C1p0__cw_balanced` with threshold `0.53`; label 1 is predicted when `p >= 0.53`. The recorded evaluation reference is 4,316 rows, confusion matrix `[[2108,870],[667,671]]`, Accuracy about `0.643883`, and Macro-F1 about `0.599485`. These are reference values, not values recomputed by this source-only release.
-
-## External resources
-
-Prepare these resources outside the repository and pass their paths explicitly:
-
-- `train.jsonl`, `validation.jsonl`, and `evaluation.jsonl`, each with `id`, `sentence1`, `sentence2`, `label` fields;
-- three fitted vectorizers under a directory shaped like `char_1/vectorizer.joblib`, `char_1_2/vectorizer.joblib`, and `word_1/vectorizer.joblib`, plus their metadata;
-- for quick inference, a frozen selected configuration, selected LR model, selected vectorizer, and the stage-1 model index/probability files required by the protection checks.
-
-No verified public download URL is available for the unified processed data or the derived model/vectorizer artifacts. The code can process authorized local resources; cloning this repository alone is therefore not sufficient for a complete run.
-
-## Environment and commands
-
-The tested dependency pins are in `requirements.txt` (Python 3.14.0 was used for the historical Windows verification). From the repository root:
+Provide authorized external `train.jsonl`, `validation.jsonl`, `evaluation.jsonl` files and the three fitted vectorizer directories, each containing `vectorizer.joblib` and metadata. Cloning the repository alone is not sufficient for training or frozen inference because derived LR artifacts are intentionally external.
 
 ```powershell
-$Work = Join-Path 'D:\' ('TFIDF_LR_runs_' + (Get-Date -Format 'yyyyMMdd_HHmmss_fff'))
+$Module = (Resolve-Path .\tfidf_lr).Path
+$Data = 'D:\authorized\afqmc\processed'
+$Vectorizers = 'D:\authorized\tfidf_vectorizers'
+$Work = Join-Path 'D:\' ('TFIDF_LR_run_' + (Get-Date -Format 'yyyyMMdd_HHmmss_fff'))
 New-Item -ItemType Directory -Path $Work -ErrorAction Stop | Out-Null
 $env:TEMP = Join-Path $Work 'temp'
 $env:TMP = Join-Path $Work 'tmp'
@@ -34,32 +21,37 @@ $env:PYTHONDONTWRITEBYTECODE = '1'
 New-Item -ItemType Directory -Force $env:TEMP,$env:TMP,$env:PIP_CACHE_DIR | Out-Null
 py -3.14 -m venv (Join-Path $Work 'venv')
 $Python = Join-Path $Work 'venv\Scripts\python.exe'
-& $Python -B -m pip install -r .\tfidf_lr\requirements.txt
+& $Python -B -m pip install -r (Join-Path $Module 'requirements.txt')
 ```
 
-Complete LR reproduction starts from the supplied vectorizers and writes only to a new external output root:
+## Complete LR experiment
 
 ```powershell
-& $Python -B .\tfidf_lr\run_tfidf_lr.py `
-  --data-dir 'D:\authorized\afqmc\processed' `
-  --vectorizer-root 'D:\authorized\tfidf_vectorizers' `
-  --evaluation 'D:\authorized\afqmc\processed\evaluation.jsonl' `
-  --output-root (Join-Path $Work 'full_reproduction_01')
+& $Python -B (Join-Path $Module 'run_tfidf_lr.py') `
+  --data-dir $Data `
+  --vectorizer-root $Vectorizers `
+  --evaluation (Join-Path $Data 'evaluation.jsonl') `
+  --output-root (Join-Path $Work 'full_run')
 ```
 
-Quick frozen inference likewise requires external frozen artifacts and a new output directory:
+The output root must be new. The wrapper runs LR training, stage-1 reload acceptance, validation selection, frozen evaluation and output integrity checks in order. It does not refit TF-IDF, merge validation into training or search parameters using evaluation.
+
+Historical evaluation references are 4,316 rows, confusion matrix `[[2108,870],[667,671]]`, Accuracy about `0.643883`, and Macro-F1 about `0.599485`.
+
+## Frozen inference
+
+Frozen inference requires the complete external stage-2 selected-artifact directory and the stage-1 run used by its protection checks:
 
 ```powershell
-& $Python -B .\tfidf_lr\src\run_tfidf_lr_stage3.py `
+& $Python -B (Join-Path $Module 'src\run_tfidf_lr_stage3.py') `
   --config 'D:\authorized\lr_stage2\selected_config.json' `
-  --evaluation 'D:\authorized\afqmc\processed\evaluation.jsonl' `
+  --evaluation (Join-Path $Data 'evaluation.jsonl') `
   --stage1-run 'D:\authorized\lr_stage1' `
-  --output-dir (Join-Path $Work 'quick_inference_01')
+  --data-dir $Data `
+  --vectorizer-root $Vectorizers `
+  --output-dir (Join-Path $Work 'frozen_inference')
 ```
 
-Missing resources fail explicitly. Existing output directories are rejected; use a new external directory for every run. The source tree is not an output location.
+`src/` retains the strict loader, sparse feature construction, model-index resolution, metric calculation, all three stages and the reload/fresh-process verification helpers required by the core pipeline. `reports/tables/` retains small aggregate parameter and metric summaries.
 
-## Included materials
-
-`src/` contains the loader, sparse feature construction, three pipeline stages, frozen inference and verification helpers. `reports/tables/` contains aggregate parameter/metric tables without sentence text. `reports/method/` contains the method summary, implementation notes and the supplied PNG flowchart. Runtime models, vectorizers, data, sentence-level outputs and logs are intentionally excluded.
-
+Method prose, flowchart images, plotting/report generation and historical presentation materials were removed from this streamlined repository version. Complete materials remain in the separate local delivery package.
