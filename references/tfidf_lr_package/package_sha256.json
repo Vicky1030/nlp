@@ -1,0 +1,45 @@
+{
+  "algorithm": "SHA-256",
+  "files": [
+    {
+      "path": "acceptance_summary.md",
+      "bytes": 978,
+      "sha256": "b9b5a603d35c3ee760c59989163f0776bbc094b1d13c15046d851926d2f2c86d"
+    },
+    {
+      "path": "frozen_config.json",
+      "bytes": 1315,
+      "sha256": "c52fdd662c4823faf6b85001c3cf2498182583e1aa16c9bb075606fbe102bbca"
+    },
+    {
+      "path": "model/lr_model.joblib",
+      "bytes": 627403,
+      "sha256": "8a5bafc061b0d49f436471c85b58d7426537d1b8e6b5038a625729d70579e992"
+    },
+    {
+      "path": "model/tfidf_vectorizer.joblib",
+      "bytes": 774708,
+      "sha256": "bf0e9d5ade8cc13cb2d619a3ec226014f472e8b307b64a39aad90d011ff10db5"
+    },
+    {
+      "path": "predict.py",
+      "bytes": 9945,
+      "sha256": "4cfad5baabc9cb4fa079ce0ae32106ce2396bdb714865f68f128f7234a3f1ac1"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2766,
+      "sha256": "178209e629a5c014f7cb0fb327b7e9c52add7d27ed5d3ab13cdf9f6480b88482"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 61,
+      "sha256": "be67ed5e7abe3146997321c28c9f2fd69783e145c8790edc79c140788adc99b7"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 503,
+      "sha256": "1ad393a46fe36f7e6b470c69de24ec9486c41d980e454082737db586320e2d8d"
+    }
+  ]
+}

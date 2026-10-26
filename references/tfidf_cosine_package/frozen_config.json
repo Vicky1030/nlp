@@ -1,0 +1,8 @@
+{
+  "method": "tfidf_cosine",
+  "representation": "char_1_2",
+  "threshold": 0.28,
+  "operator": ">=",
+  "vectorizer": "model/vectorizer.joblib",
+  "metadata": "model/metadata.json"
+}

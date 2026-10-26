@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "path": "acceptance_summary.md",
+      "bytes": 918,
+      "sha256": "1c8b98050144750b17d499c22fd148035fe5d12cfd7eea39e7cba76f29c391fa"
+    },
+    {
+      "path": "data_loader.py",
+      "bytes": 2096,
+      "sha256": "89fc98b3b4ae0d87b9d58f0217be99ad98ff1a4c8b0da32ab1f518a18e012068"
+    },
+    {
+      "path": "frozen_config.json",
+      "bytes": 184,
+      "sha256": "e212e2e20cb327e73640e0cd02f5af6604f40cf025791cf218681880173f447c"
+    },
+    {
+      "path": "model/metadata.json",
+      "bytes": 1858,
+      "sha256": "ebe2d1877bb2f27a915fcb2dfdbc28be820ca23ddb901cd9f58a97ee4a75a220"
+    },
+    {
+      "path": "model/vectorizer.joblib",
+      "bytes": 774708,
+      "sha256": "bf0e9d5ade8cc13cb2d619a3ec226014f472e8b307b64a39aad90d011ff10db5"
+    },
+    {
+      "path": "predict.py",
+      "bytes": 6786,
+      "sha256": "d305ccc8061575c772618ed44111b19c0dceac39ad2a6cadec9bb0a9d3f99bb6"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3551,
+      "sha256": "a56682ca0feb5e6bd569e5f551434422ca4a51b1898546417a9b286ebf4d725a"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 61,
+      "sha256": "8e266d3bb7693e00eda575d3bbc6fe1e49f6b5e14298fac31543288aff699ee4"
+    }
+  ],
+  "note": "Manifest excludes its own hash."
+}

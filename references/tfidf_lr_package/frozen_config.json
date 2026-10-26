@@ -1,0 +1,45 @@
+{
+  "status": "frozen",
+  "config_id": "char_1_2__C1p0__cw_balanced",
+  "representation": "char_1_2",
+  "threshold": 0.53,
+  "threshold_operator": ">=",
+  "method": "tfidf_lr",
+  "vocabulary_size": 39158,
+  "feature_dimension": 78316,
+  "feature_formula": "[abs(A-B); A.multiply(B)]",
+  "feature_format": "CSR float64",
+  "positive_label": 1,
+  "classes": [0, 1],
+  "model_relative_path": "model/lr_model.joblib",
+  "vectorizer_relative_path": "model/tfidf_vectorizer.joblib",
+  "model_class": "sklearn.linear_model._logistic.LogisticRegression",
+  "vectorizer_class": "sklearn.feature_extraction.text.TfidfVectorizer",
+  "lr_parameters": {
+    "C": 1.0,
+    "class_weight": "balanced",
+    "solver": "liblinear",
+    "penalty": "l2",
+    "max_iter": 5000,
+    "fit_intercept": true
+  },
+  "tfidf_parameters": {
+    "analyzer": "char",
+    "ngram_range": [1, 2],
+    "lowercase": false,
+    "norm": "l2",
+    "use_idf": true,
+    "smooth_idf": true
+  },
+  "source_sha256": {
+    "copied_model": "8a5bafc061b0d49f436471c85b58d7426537d1b8e6b5038a625729d70579e992",
+    "copied_vectorizer": "bf0e9d5ade8cc13cb2d619a3ec226014f472e8b307b64a39aad90d011ff10db5"
+  },
+  "verified_dependencies": {
+    "python": "3.14.0",
+    "scikit-learn": "1.9.1",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "joblib": "1.6.0"
+  }
+}

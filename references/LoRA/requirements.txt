@@ -1,0 +1,9 @@
+# 请先按 README 独立安装 CUDA 12.8 的 torch，再安装此文件。
+transformers>=4.55,<5
+peft>=0.17,<0.20
+accelerate>=1.6,<2
+bitsandbytes>=0.46.1
+huggingface_hub>=0.34,<1
+safetensors>=0.5
+numpy>=1.26,<3
+scikit-learn>=1.5,<2
