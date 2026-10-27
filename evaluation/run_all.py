@@ -1,4 +1,4 @@
-"""One-command unified evaluation for the available frozen predictions."""
+"""Unified evaluation for frozen and newly generated predictions."""
 import argparse
 import csv
 import hashlib
@@ -17,11 +17,12 @@ from .visualize import visualize
 EXPECTED_METHODS = [
     {"method": "tfidf_cosine", "split": "evaluation", "owner": "A", "status": "available"},
     {"method": "tfidf_lr", "split": "evaluation", "owner": "A", "status": "available"},
-    {"method": "qwen_zero_shot", "split": "evaluation", "owner": "B", "status": "missing_prediction_file"},
-    {"method": "qwen_few_shot", "split": "evaluation", "owner": "B", "status": "missing_prediction_file"},
+    {"method": "P0.predictions", "split": "evaluation", "owner": "B", "status": "available"},
+    {"method": "near_conditions.predictions", "split": "evaluation", "owner": "B", "status": "available"},
+    {"method": "fixed2_last_exact.predictions", "split": "evaluation", "owner": "B", "status": "available"},
+    {"method": "lora_r16_a32_30899_final", "split": "evaluation", "owner": "C", "status": "available"},
     {"method": "lora_r8_a16_3000", "split": "evaluation", "owner": "C", "status": "not_provided_on_evaluation"},
     {"method": "lora_r16_a32_3000", "split": "evaluation", "owner": "C", "status": "not_provided_on_evaluation"},
-    {"method": "lora_r16_a32_30899_final", "split": "evaluation", "owner": "C", "status": "available"},
 ]
 
 
@@ -172,7 +173,7 @@ def write_summary_report(out_dir, results):
         "## 解释边界与缺失项",
         "",
         "- A 的 Cosine 与 LR 预测可在统一 evaluation 上比较；C 的全量训练 r16 模型也有 evaluation 预测。",
-        "- B 的 Zero-shot/Few-shot 最终 evaluation 预测未包含在当前交付包中，因此没有编造或代填成绩。见 `model_availability.csv`。",
+        "- B 的 P0、最终 Zero-shot 和最终 Few-shot prediction 均已包含并按统一 evaluation 评分。",
         "- C 的 3,000 条训练 r8/r16 只有 validation 结果；目前没有它们的最终 evaluation 预测。",
         "- 延迟来自不同硬件、依赖版本与计时口径，不能直接据此做严格速度排名。",
         "- 错误标签为启发式筛选，报告中应人工阅读典型句对后再解释语义错误原因。",
@@ -181,12 +182,9 @@ def write_summary_report(out_dir, results):
     (out_dir / "summary_report.md").write_text("\n".join(lines), encoding="utf-8")
 
 
-def main():
-    parser = argparse.ArgumentParser(description="AFQMC one-command evaluation")
-    parser.add_argument("--output-dir", default=str(OUTPUT_DIR))
-    parser.add_argument("--no-plots", action="store_true")
-    args = parser.parse_args()
-    out = Path(args.output_dir)
+def run_frozen_evaluation(output_dir=OUTPUT_DIR, make_plots=True, emit_json=True):
+    """Re-evaluate every committed prediction file without loading model weights."""
+    out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
 
     availability = []
@@ -205,7 +203,7 @@ def main():
             if not aligned:
                 results[split_name] = {"models": 0, "note": "No prediction files"}
                 continue
-            results[split_name] = build_metrics(split_name, aligned, out, make_plots=not args.no_plots)
+            results[split_name] = build_metrics(split_name, aligned, out, make_plots=make_plots)
         except Exception as exc:
             failures.append({"split": split_name, "error": str(exc)})
             print(f"[ERROR] {split_name}: {exc}", file=sys.stderr)
@@ -220,13 +218,23 @@ def main():
             "Evaluation and validation are reported separately; their scores must not be mixed.",
             "latency_ms is preserved from each producer and may not be comparable across hardware or timing scopes.",
             "Semantic error tags are heuristic candidates for manual review, not automatic ground-truth explanations.",
-            "B's provided package contains code/configs but no B-specific final evaluation prediction JSONL.",
+            "B Zero-shot and Few-shot evaluation predictions are included and scored.",
         ],
     }
     (out / "run_report.json").write_text(json.dumps(run_record, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps(run_record, ensure_ascii=False, indent=2))
+    if emit_json:
+        print(json.dumps(run_record, ensure_ascii=False, indent=2))
     if failures:
-        raise SystemExit(1)
+        raise RuntimeError(f"Evaluation failed for {len(failures)} split(s)")
+    return run_record
+
+
+def main():
+    parser = argparse.ArgumentParser(description="AFQMC one-command evaluation")
+    parser.add_argument("--output-dir", default=str(OUTPUT_DIR))
+    parser.add_argument("--no-plots", action="store_true")
+    args = parser.parse_args()
+    run_frozen_evaluation(args.output_dir, make_plots=not args.no_plots)
 
 
 if __name__ == "__main__":

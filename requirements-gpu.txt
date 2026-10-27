@@ -1,0 +1,8 @@
+# Install a CUDA-compatible PyTorch build first, then install this file.
+-r requirements-live.txt
+transformers==4.57.6
+peft==0.19.1
+accelerate==1.15.0
+bitsandbytes==0.50.2
+huggingface_hub==0.36.2
+safetensors==0.8.0

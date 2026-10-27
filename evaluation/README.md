@@ -22,7 +22,7 @@ AFQMC_D_evaluation_starter/
 
 ## 2. 环境准备
 
-Python 3.9+。核心评价与错误分析只使用 Python 标准库；绘图需要安装 matplotlib：
+Python 3.9+。核心评价与错误分析只使用 Python 标准库；完整复现的 PNG 绘图需要安装 requirements 中的 matplotlib：
 
 ```bash
 python -m pip install matplotlib

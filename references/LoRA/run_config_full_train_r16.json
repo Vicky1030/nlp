@@ -1,7 +1,7 @@
 {
-  "model": "C:\\D\\projects\\nlpC\\models\\qwen3-1.7b",
-  "train": "C:\\D\\projects\\nlpC\\data\\afqmc_shared\\train.jsonl",
-  "validation": "C:\\D\\projects\\nlpC\\data\\afqmc_pilot\\validation_100.jsonl",
+  "model": "models/qwen3-1.7b",
+  "train": "data/processed/train.jsonl",
+  "validation": "data/processed/validation.jsonl",
   "output": ".\\outputs\\full_train_v1\\qlora_r16_a32_30899",
   "rank": 16,
   "alpha": 32,
@@ -12,7 +12,7 @@
   "grad_accum": 8,
   "seed": 42,
   "save_steps": 250,
-  "resume_from_checkpoint": "C:\\D\\projects\\nlpC\\outputs\\full_train_v1\\qlora_r16_a32_30899\\checkpoint-7500",
+  "resume_from_checkpoint": "outputs/full_train_v1/qlora_r16_a32_30899/checkpoint-7500",
   "status": "complete",
   "started_at_utc": "2026-10-23T13:45:56.916476+00:00",
   "model_fingerprint": "a9d6d3c0e389377afced62546d63c8c64fb4b26e9495b11de8f1662afb735c5c",
@@ -86,13 +86,13 @@
   "resume_events": [
     {
       "resumed_at_utc": "2026-10-24T00:35:36.022329+00:00",
-      "checkpoint": "C:\\D\\projects\\nlpC\\outputs\\full_train_v1\\qlora_r16_a32_30899\\checkpoint-4250",
+      "checkpoint": "outputs/full_train_v1/qlora_r16_a32_30899/checkpoint-4250",
       "previous_status": "running",
       "previous_error": null
     },
     {
       "resumed_at_utc": "2026-10-24T08:07:50.773927+00:00",
-      "checkpoint": "C:\\D\\projects\\nlpC\\outputs\\full_train_v1\\qlora_r16_a32_30899\\checkpoint-7500",
+      "checkpoint": "outputs/full_train_v1/qlora_r16_a32_30899/checkpoint-7500",
       "previous_status": "running",
       "previous_error": null
     }

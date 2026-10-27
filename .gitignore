@@ -3,3 +3,6 @@ outputs/*
 __pycache__/
 *.pyc
 .venv/
+runs/
+_tmp/
+models/qwen3-1.7b/
